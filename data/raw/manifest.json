@@ -1,0 +1,56 @@
+[
+    {
+        "file": "lazar_klas_interview_1989.txt",
+        "source_type": "interview_transcript",
+        "title": "Bob Lazar — KLAS-TV Interview with George Knapp (1989)",
+        "author": "George Knapp / KLAS-TV",
+        "date_created": "1989-11-10",
+        "subjects": ["Bob Lazar", "S4", "Area 51", "Element 115", "George Knapp"],
+        "classification": "public broadcast"
+    },
+    {
+        "file": "lazar_joe_rogan_2019.txt",
+        "source_type": "interview_transcript",
+        "title": "Bob Lazar — Joe Rogan Experience #1315",
+        "author": "Joe Rogan",
+        "date_created": "2019-06-20",
+        "subjects": ["Bob Lazar", "S4", "Area 51", "Element 115", "Jeremy Corbell"],
+        "classification": "public podcast"
+    },
+    {
+        "file": "area51_foia_doe_1994.txt",
+        "source_type": "government_document",
+        "title": "DOE FOIA Release — Nevada Test Site Facility Operations",
+        "author": "US Department of Energy",
+        "date_created": "1994-03-15",
+        "subjects": ["Area 51", "Nevada Test Site", "Groom Lake", "S4"],
+        "classification": "FOIA release"
+    },
+    {
+        "file": "element115_synthesis_2003.txt",
+        "source_type": "scientific_paper",
+        "title": "Synthesis of Element 115 (Moscovium) — JINR Dubna",
+        "author": "Oganessian et al.",
+        "date_created": "2003-02-01",
+        "subjects": ["Element 115", "Moscovium", "JINR", "nuclear physics"],
+        "classification": "peer-reviewed publication"
+    },
+    {
+        "file": "lazar_polygraph_results.txt",
+        "source_type": "archival_reference",
+        "title": "Polygraph Examination Results — Robert Lazar",
+        "author": "Terry Tavernetti / Ron Slay",
+        "date_created": "1989-12-01",
+        "subjects": ["Bob Lazar", "polygraph", "credibility"],
+        "classification": "private examination record"
+    },
+    {
+        "file": "production_notes_s4_film.md",
+        "source_type": "production_note",
+        "title": "S4: The Bob Lazar Story — Production Research Notes",
+        "author": "Chris Matteau",
+        "date_created": "2024-06-01",
+        "subjects": ["S4 film", "production", "research compilation"],
+        "classification": "internal production document"
+    }
+]

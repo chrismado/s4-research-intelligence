@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  s4ri:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../data:/app/data
+    environment:
+      - S4RI_LLM_BASE_URL=http://ollama:11434
+      - S4RI_LLM_MODEL=mistral:7b-instruct-v0.3-q5_K_M
+    depends_on:
+      - ollama
+
+volumes:
+  ollama_data:

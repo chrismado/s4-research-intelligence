@@ -1,0 +1,192 @@
+"""
+CLI interface for S4 Research Intelligence.
+
+Usage:
+    s4ri ingest --manifest data/raw/manifest.json
+    s4ri query "What did Bob Lazar claim about Element 115?"
+    s4ri serve
+    s4ri stats
+"""
+
+from pathlib import Path
+
+import typer
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+
+console = Console()
+app = typer.Typer(name="s4ri", help="S4 Research Intelligence — Documentary Research Assistant")
+
+
+@app.command()
+def ingest(
+    manifest: Path = typer.Option(None, help="Path to JSON manifest file"),
+    file: Path = typer.Option(None, help="Path to a single document"),
+    source_type: str = typer.Option("production_note", help="Source type for single file"),
+):
+    """Ingest documents into the vector store."""
+    from src.ingestion.chunker import chunk_document, chunk_documents
+    from src.ingestion.loader import load_document, load_from_manifest
+    from src.ingestion.vectorstore import VectorStore
+
+    store = VectorStore()
+
+    if manifest:
+        docs = load_from_manifest(manifest)
+        chunks = chunk_documents(docs)
+        added = store.add_chunks(chunks)
+        console.print(f"[green]OK[/green] Ingested {len(docs)} documents -> {added} chunks")
+    elif file:
+        doc = load_document(file, metadata_override={"source_type": source_type})
+        chunks = chunk_document(doc)
+        added = store.add_chunks(chunks)
+        console.print(f"[green]OK[/green] Ingested '{file.name}' -> {added} chunks")
+    else:
+        console.print("[red]Provide --manifest or --file[/red]")
+        raise typer.Exit(1)
+
+    console.print(f"Total chunks in store: {store.count}")
+
+
+@app.command()
+def query(
+    question: str = typer.Argument(help="Research question"),
+    source_type: str = typer.Option(None, help="Filter by source type"),
+    top_k: int = typer.Option(5, help="Number of sources to retrieve"),
+):
+    """Query the research corpus."""
+    from src.models.documents import SourceType
+    from src.models.queries import ResearchQuery
+    from src.retrieval.pipeline import ResearchPipeline
+
+    filters = {}
+    if source_type:
+        filters["source_types"] = [SourceType(source_type)]
+
+    rq = ResearchQuery(question=question, top_k=top_k, **filters)
+    pipeline = ResearchPipeline()
+    response = pipeline.query(rq)
+
+    # Display answer
+    console.print(Panel(response.answer, title="[bold]Answer[/bold]", border_style="blue"))
+
+    # Sources table
+    if response.sources:
+        table = Table(title="Sources", show_lines=True)
+        table.add_column("File", style="cyan")
+        table.add_column("Type", style="yellow")
+        table.add_column("Relevance", justify="right")
+        table.add_column("Reliability", justify="right")
+        table.add_column("Combined", justify="right", style="green")
+
+        for src in response.sources:
+            table.add_row(
+                src.source_file,
+                src.source_type.value,
+                f"{src.relevance_score:.3f}",
+                f"{src.reliability_score:.2f}",
+                f"{src.combined_score:.3f}",
+            )
+        console.print(table)
+
+    # Contradictions
+    if response.contradictions:
+        console.print("\n[bold red]CONTRADICTIONS DETECTED[/bold red]")
+        for c in response.contradictions:
+            console.print(f"  * {c.source_a}: {c.claim_a}")
+            console.print(f"    vs {c.source_b}: {c.claim_b}")
+            console.print(f"    -> {c.explanation}\n")
+
+    # Timeline
+    if response.timeline:
+        console.print("\n[bold]Timeline Events[/bold]")
+        for e in response.timeline:
+            console.print(f"  [{e.date or '?'}] {e.description} (from {e.source})")
+
+    # Confidence
+    conf_color = "green" if response.confidence > 0.7 else "yellow" if response.confidence > 0.4 else "red"
+    console.print(f"\n[{conf_color}]Confidence: {response.confidence:.0%}[/{conf_color}]")
+
+    if response.reasoning:
+        console.print(f"[dim]Reasoning: {response.reasoning}[/dim]")
+
+
+@app.command()
+def serve(
+    host: str = typer.Option("0.0.0.0", help="Host to bind"),
+    port: int = typer.Option(8000, help="Port to bind"),
+):
+    """Start the FastAPI server."""
+    import uvicorn
+
+    console.print(f"[green]Starting S4 Research Intelligence API on {host}:{port}[/green]")
+    uvicorn.run("src.api.app:app", host=host, port=port, reload=True)
+
+
+@app.command()
+def stats():
+    """Show vector store statistics."""
+    from src.ingestion.vectorstore import VectorStore
+
+    store = VectorStore()
+    console.print(f"Collection: {store._collection.name}")
+    console.print(f"Total chunks: {store.count}")
+    console.print(f"Embedding model: {store._embeddings.model_name}")
+
+
+@app.command()
+def evaluate(
+    test_set: Path = typer.Option(
+        "data/evaluation/test_queries.json", help="Path to evaluation test set"
+    ),
+    output: Path = typer.Option(None, help="Save results to JSON file"),
+):
+    """Run RAG evaluation pipeline against test queries."""
+    import json
+
+    from src.evaluation.evaluator import RAGEvaluator
+
+    console.print("[bold]Running RAG Evaluation Pipeline[/bold]\n")
+
+    evaluator = RAGEvaluator()
+    results = evaluator.evaluate_batch(test_set)
+
+    # Summary table
+    table = Table(title="Evaluation Results", show_lines=True)
+    table.add_column("Metric", style="cyan")
+    table.add_column("Value", justify="right", style="green")
+
+    table.add_row("Total Queries", str(results["total_queries"]))
+    table.add_row("Avg Confidence", f"{results['avg_confidence']:.2%}")
+    table.add_row("Avg Source Recall", f"{results['avg_source_recall']:.2%}")
+    table.add_row("Avg Date Coverage", f"{results['avg_date_coverage']:.2%}")
+    table.add_row("Citation Rate", f"{results['citation_rate']:.0%}")
+    table.add_row("Contradiction Accuracy", f"{results['contradiction_accuracy']:.0%}")
+    console.print(table)
+
+    # Individual results
+    console.print("\n[bold]Individual Results[/bold]")
+    for r in results["individual_results"]:
+        conf_color = "green" if r["confidence"] > 0.7 else "yellow" if r["confidence"] > 0.4 else "red"
+        console.print(f"\n  Q: {r['question']}")
+        console.print(f"  Confidence: [{conf_color}]{r['confidence']:.0%}[/{conf_color}] | Sources: {r['num_sources']} | Contradictions: {r['num_contradictions']}")
+
+    if output:
+        output.write_text(json.dumps(results, indent=2, default=str))
+        console.print(f"\n[green]Results saved to {output}[/green]")
+
+
+@app.command()
+def ui():
+    """Launch the Streamlit frontend."""
+    import subprocess
+    import sys
+
+    frontend_path = Path(__file__).parent / "frontend" / "app.py"
+    console.print("[green]Launching S4 Research Intelligence UI...[/green]")
+    subprocess.run([sys.executable, "-m", "streamlit", "run", str(frontend_path)])
+
+
+if __name__ == "__main__":
+    app()

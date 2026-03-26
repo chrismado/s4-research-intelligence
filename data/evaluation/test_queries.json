@@ -1,0 +1,37 @@
+[
+    {
+        "question": "What year did Bob Lazar claim he began working at S4?",
+        "ground_truth": "Lazar claimed he began working at S4 in late 1988, recruited through physicist Edward Teller.",
+        "expected_sources": ["lazar_klas_interview_1989.txt", "lazar_joe_rogan_2019.txt"],
+        "expected_date_mentions": ["1988", "1989"],
+        "expect_contradictions": false
+    },
+    {
+        "question": "What is Element 115 and how does Lazar's claim relate to its actual discovery?",
+        "ground_truth": "Lazar claimed Element 115 was used as fuel for alien propulsion at S4. Element 115 (Moscovium) was later synthesized at JINR Dubna in 2003, but it is highly unstable with a half-life of milliseconds — contradicting Lazar's claim of a stable isotope.",
+        "expected_sources": ["element115_synthesis_2003.pdf", "lazar_klas_interview_1989.txt"],
+        "expected_date_mentions": ["2003", "115"],
+        "expect_contradictions": true
+    },
+    {
+        "question": "What were the results of Bob Lazar's polygraph examinations?",
+        "ground_truth": "Lazar underwent polygraph examinations by Terry Tavernetti and Ron Slay. Results were interpreted as showing he was being truthful, though polygraph reliability is scientifically contested.",
+        "expected_sources": ["lazar_polygraph_results.txt"],
+        "expected_date_mentions": ["1989"],
+        "expect_contradictions": false
+    },
+    {
+        "question": "What government documents exist confirming or denying the existence of S4?",
+        "ground_truth": "FOIA releases from the DOE reference Nevada Test Site operations and Groom Lake but do not specifically mention a facility designated 'S4' in the configuration Lazar described.",
+        "expected_sources": ["area51_foia_doe_1994.pdf"],
+        "expected_date_mentions": ["1994"],
+        "expect_contradictions": false
+    },
+    {
+        "question": "How has Lazar's account changed between his 1989 interview and his 2019 Joe Rogan appearance?",
+        "ground_truth": "Core claims remained consistent across 30 years. Minor details about his educational background and specific technical descriptions have been questioned for inconsistencies.",
+        "expected_sources": ["lazar_klas_interview_1989.txt", "lazar_joe_rogan_2019.txt"],
+        "expected_date_mentions": ["1989", "2019"],
+        "expect_contradictions": true
+    }
+]

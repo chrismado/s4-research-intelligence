@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Data (user provides their own research corpus)
+data/raw/*.pdf
+data/raw/*.docx
+data/processed/
+data/vectors/
+
+# Logs
+logs/
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db

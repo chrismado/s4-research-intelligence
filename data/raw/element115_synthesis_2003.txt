@@ -1,0 +1,48 @@
+SYNTHESIS OF SUPERHEAVY ELEMENT 115 IN THE REACTION 243Am + 48Ca
+
+Authors: Yu. Ts. Oganessian, V. K. Utyonkov, Yu. V. Lobanov, F. Sh. Abdullin,
+A. N. Polyakov, I. V. Shirokovsky, Yu. S. Tsyganov, G. G. Gulbekian,
+S. L. Bogomolov, B. N. Gikal, A. N. Mezentsev, S. Iliev, V. G. Subbotin,
+A. M. Sukhov, A. A. Voinov, G. V. Buklanov, K. Subotic, V. I. Zagrebaev,
+M. G. Itkis, J. B. Patin, K. J. Moody, J. F. Wild, M. A. Stoyer,
+N. J. Stoyer, D. A. Shaughnessy, J. M. Kenneally, R. W. Lougheed
+
+Institution: Joint Institute for Nuclear Research (JINR), Dubna, Russia
+In collaboration with Lawrence Livermore National Laboratory, USA
+
+Published: Physical Review C, February 2003
+DOI: 10.1103/PhysRevC.69.021601
+
+ABSTRACT:
+The superheavy element with atomic number Z=115 was produced for the first time in the 243Am + 48Ca nuclear fusion reaction at the U400 cyclotron at JINR Dubna. Three atoms of element 115 were detected through their alpha-decay chains, which terminated in the spontaneous fission of previously known isotopes of dubnium (element 105).
+
+The isotope 288-115 was produced with a cross section of approximately 2.7 picobarns. The observed alpha-decay chain consisted of five consecutive alpha decays followed by spontaneous fission:
+
+288-115 -> 284-113 -> 280-111 -> 276-Mt -> 272-Bh -> 268-Db (spontaneous fission)
+
+RESULTS AND ANALYSIS:
+
+The synthesized atoms of element 115 exhibited the following properties:
+- Atomic number: Z = 115
+- Mass number: A = 288
+- Half-life: approximately 87 milliseconds (87 ms)
+- Decay mode: Alpha decay
+- Total decay chain duration: approximately 30 seconds from element 115 to terminal spontaneous fission
+
+The extremely short half-life of 87 milliseconds is a critical observation. This isotope of element 115 is profoundly unstable. It exists for less than one-tenth of a second before undergoing radioactive decay. No stable or long-lived isotope of element 115 was observed or is predicted by current nuclear physics models.
+
+DISCUSSION:
+
+The synthesis of element 115 fills a position in the periodic table predicted by nuclear shell theory. Theoretical models, including the nuclear shell model and relativistic mean-field calculations, predict that an "island of stability" may exist for superheavy elements near Z=114, N=184 (proton number 114, neutron number 184). However, the isotope 288-115, with 173 neutrons, falls short of this predicted island of stability.
+
+Whether a stable isotope of element 115 could exist remains an open theoretical question. Current models suggest that if an island of stability exists, the most stable superheavy isotopes would have significantly more neutrons than those produced in our experiments. The neutron-rich isotopes required to test the island of stability hypothesis are beyond the reach of current synthesis techniques.
+
+Element 115 was officially named "Moscovium" (symbol: Mc) by IUPAC in November 2016, following independent confirmation of its synthesis.
+
+RELEVANCE TO PRIOR CLAIMS:
+
+It is noted that claims regarding the existence and properties of element 115 predate its laboratory synthesis. Robert Lazar, a figure in UFO-related discourse, claimed in 1989 that element 115 existed in a stable isotopic form and was used as fuel for extraterrestrial propulsion systems. Lazar's claims described element 115 as a stable, orange-colored metallic substance that could be machined and handled safely.
+
+Our experimental results demonstrate that the synthesized isotope of element 115 is, in fact, highly unstable (half-life ~87 ms) and exists only briefly under extreme laboratory conditions. The existence of a hypothetical stable isotope of element 115, while not disproven by our results, is not supported by current theoretical models and has not been observed experimentally.
+
+The prediction of element 115's existence was not unique to Lazar's claims — the superheavy elements were predicted by nuclear physics theory decades before either Lazar's statements or our synthesis. The existence of element 115 was anticipated by the periodic table itself.
