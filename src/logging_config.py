@@ -9,6 +9,7 @@ import sys
 import time
 from contextlib import contextmanager
 from functools import wraps
+from pathlib import Path
 
 from loguru import logger
 
@@ -34,8 +35,10 @@ def setup_logging():
     )
 
     # JSON file handler for production
+    log_dir = Path("logs")
+    log_dir.mkdir(exist_ok=True)
     logger.add(
-        "logs/s4ri_{time:YYYY-MM-DD}.log",
+        str(log_dir / "s4ri_{time:YYYY-MM-DD}.log"),
         level="DEBUG",
         format="{message}",
         serialize=True,

@@ -13,7 +13,7 @@ from .documents import SourceType
 class ResearchQuery(BaseModel):
     """A research question submitted to the assistant."""
 
-    question: str = Field(description="Natural language research question")
+    question: str = Field(max_length=10000, description="Natural language research question")
     source_types: Optional[list[SourceType]] = Field(
         default=None, description="Filter to specific source types"
     )

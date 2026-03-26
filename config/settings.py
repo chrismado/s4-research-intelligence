@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     llm_temperature: float = 0.1
     llm_max_tokens: int = 2048
     llm_num_gpu: int = -1  # -1 = auto, 0 = CPU only
+    llm_timeout: int = 120  # seconds
 
     # --- Vector store ---
     chroma_collection: str = "s4_research"
@@ -70,6 +71,7 @@ class Settings(BaseSettings):
     }
 
     # --- API ---
+    max_upload_size_mb: int = 50
     api_host: str = "0.0.0.0"
     api_port: int = 8000
     api_cors_origins: list[str] = ["http://localhost:3000", "http://localhost:8501"]

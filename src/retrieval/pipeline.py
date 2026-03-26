@@ -223,9 +223,7 @@ class ResearchPipeline:
             reasoning=llm_output.get("reasoning", ""),
         )
 
-    def query_with_memory(
-        self, research_query: ResearchQuery, session_id: str = "default"
-    ) -> ResearchResponse:
+    def query_with_memory(self, research_query: ResearchQuery) -> ResearchResponse:
         """
         Execute RAG pipeline with conversation memory.
 
@@ -254,7 +252,7 @@ class ResearchPipeline:
         """Async LLM call using httpx for non-blocking FastAPI routes."""
         prompt = RESEARCH_QUERY_PROMPT.format(context=context, question=question)
 
-        async with httpx.AsyncClient(timeout=120.0) as client:
+        async with httpx.AsyncClient(timeout=float(settings.llm_timeout)) as client:
             resp = await client.post(
                 f"{settings.llm_base_url}/api/chat",
                 json={

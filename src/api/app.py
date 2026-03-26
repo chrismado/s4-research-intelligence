@@ -7,9 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from config.settings import settings
 from src.api.routes import router
+from src.logging_config import setup_logging
 
 
 def create_app() -> FastAPI:
+    setup_logging()
     app = FastAPI(
         title="S4 Research Intelligence",
         description=(
@@ -27,7 +29,7 @@ def create_app() -> FastAPI:
         CORSMiddleware,
         allow_origins=settings.api_cors_origins,
         allow_credentials=True,
-        allow_methods=["*"],
+        allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["*"],
     )
 
@@ -35,7 +37,22 @@ def create_app() -> FastAPI:
 
     @app.get("/health")
     async def health():
-        return {"status": "ok", "version": "1.0.0"}
+        import httpx
+
+        ollama_ok = False
+        try:
+            async with httpx.AsyncClient(timeout=5.0) as client:
+                resp = await client.get(f"{settings.llm_base_url}/api/tags")
+                ollama_ok = resp.status_code == 200
+        except Exception:
+            pass
+
+        return {
+            "status": "ok" if ollama_ok else "degraded",
+            "version": "1.0.0",
+            "ollama": "connected" if ollama_ok else "unavailable",
+            "llm_model": settings.llm_model,
+        }
 
     return app
 

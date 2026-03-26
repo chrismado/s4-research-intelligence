@@ -12,7 +12,7 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from loguru import logger
 
 from config.settings import settings
-from src.ingestion.chunker import chunk_document
+from src.ingestion.chunker import chunk_document, chunk_documents
 from src.ingestion.loader import load_document, load_from_manifest
 from src.ingestion.vectorstore import VectorStore
 from src.models.documents import SourceType
@@ -108,11 +108,18 @@ async def ingest_file(
     """Upload and ingest a single document."""
     store = _get_store()
 
-    # Save uploaded file
+    # Save uploaded file with size check
+    content = await file.read()
+    max_bytes = settings.max_upload_size_mb * 1024 * 1024
+    if len(content) > max_bytes:
+        raise HTTPException(
+            status_code=413,
+            detail=f"File too large ({len(content) // (1024*1024)}MB). Max: {settings.max_upload_size_mb}MB",
+        )
+
     upload_dir = settings.raw_dir
     upload_dir.mkdir(parents=True, exist_ok=True)
     filepath = upload_dir / file.filename
-    content = await file.read()
     filepath.write_bytes(content)
 
     # Load, chunk, embed
@@ -123,8 +130,6 @@ async def ingest_file(
         metadata_override["author"] = author
 
     doc = load_document(filepath, metadata_override=metadata_override)
-    from src.ingestion.chunker import chunk_document
-
     chunks = chunk_document(doc)
     added = store.add_chunks(chunks)
 
@@ -146,8 +151,6 @@ async def ingest_manifest(manifest_path: str = Form(...)):
         raise HTTPException(status_code=404, detail=f"Manifest not found: {path}")
 
     docs = load_from_manifest(path)
-    from src.ingestion.chunker import chunk_documents
-
     chunks = chunk_documents(docs)
     added = store.add_chunks(chunks)
 

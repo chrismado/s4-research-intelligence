@@ -62,7 +62,7 @@ def render_sidebar():
     st.sidebar.subheader("Filters")
     source_filter = st.sidebar.multiselect(
         "Source Types",
-        options=[st.value for st in SourceType],
+        options=[stype.value for stype in SourceType],
         format_func=lambda x: x.replace("_", " ").title(),
         default=None,
         help="Filter retrieval to specific source types",
