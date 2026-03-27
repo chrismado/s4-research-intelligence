@@ -4,6 +4,7 @@ Central settings with environment variable overrides.
 """
 
 from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
