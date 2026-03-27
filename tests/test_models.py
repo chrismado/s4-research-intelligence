@@ -1,10 +1,11 @@
 """Tests for Pydantic models — schema validation and edge cases."""
 
-import pytest
 from datetime import date
 
-from src.models.documents import DocumentMetadata, SourceType, DocumentChunk
-from src.models.queries import ResearchQuery, ResearchResponse, SourceReference
+import pytest
+
+from src.models.documents import DocumentMetadata, SourceType
+from src.models.queries import ResearchQuery, ResearchResponse
 
 
 class TestDocumentMetadata:
@@ -19,7 +20,7 @@ class TestDocumentMetadata:
         assert meta.language == "en"
 
     def test_reliability_bounds(self):
-        with pytest.raises(Exception):
+        with pytest.raises(Exception):  # noqa: B017
             DocumentMetadata(
                 source_file="test.txt",
                 source_type=SourceType.PRODUCTION_NOTE,
@@ -73,5 +74,5 @@ class TestResearchResponse:
         assert r.timeline == []
 
     def test_confidence_bounds(self):
-        with pytest.raises(Exception):
+        with pytest.raises(Exception):  # noqa: B017
             ResearchResponse(answer="test", sources=[], confidence=1.5)

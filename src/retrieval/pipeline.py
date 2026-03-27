@@ -9,7 +9,6 @@ score. This produces research-grade results, not generic RAG output.
 
 import json
 import time
-from typing import Optional
 
 import httpx
 from loguru import logger
@@ -41,12 +40,12 @@ class ResearchPipeline:
     5. Response parsing with citation validation
     """
 
-    def __init__(self, vector_store: Optional[VectorStore] = None):
+    def __init__(self, vector_store: VectorStore | None = None):
         self.vector_store = vector_store or VectorStore()
         self.llm_client = OllamaClient(host=settings.llm_base_url)
         self.memory = ConversationMemory()
 
-    def _build_metadata_filter(self, query: ResearchQuery) -> Optional[dict]:
+    def _build_metadata_filter(self, query: ResearchQuery) -> dict | None:
         """Convert query filters to ChromaDB where clause."""
         conditions = []
 
@@ -175,7 +174,10 @@ class ResearchPipeline:
                 answer="No relevant sources found in the research corpus for this query.",
                 sources=[],
                 confidence=0.0,
-                reasoning="Vector search returned zero results. The corpus may not contain information about this topic.",
+                reasoning=(
+                    "Vector search returned zero results. "
+                    "The corpus may not contain information about this topic."
+                ),
             )
 
         # 2. Source-weighted reranking

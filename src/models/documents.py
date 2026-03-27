@@ -9,7 +9,6 @@ reliability, temporal relevance, and cross-reference density.
 
 from datetime import date
 from enum import Enum
-from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -31,19 +30,23 @@ class DocumentMetadata(BaseModel):
     source_file: str = Field(description="Original filename")
     source_type: SourceType
     title: str = Field(description="Document or section title")
-    author: Optional[str] = None
-    date_created: Optional[date] = None
-    date_range_start: Optional[date] = None
-    date_range_end: Optional[date] = None
-    subjects: list[str] = Field(default_factory=list, description="People, places, programs mentioned")
-    classification: Optional[str] = Field(
+    author: str | None = None
+    date_created: date | None = None
+    date_range_start: date | None = None
+    date_range_end: date | None = None
+    subjects: list[str] = Field(
+        default_factory=list, description="People, places, programs mentioned"
+    )
+    classification: str | None = Field(
         default=None, description="e.g. 'FOIA release', 'public testimony', 'classified (leaked)'"
     )
     language: str = "en"
     reliability_score: float = Field(
         default=0.5, ge=0.0, le=1.0, description="Source reliability weight for retrieval scoring"
     )
-    chunk_index: int = Field(default=0, description="Position of this chunk within the source document")
+    chunk_index: int = Field(
+        default=0, description="Position of this chunk within the source document"
+    )
     total_chunks: int = Field(default=1, description="Total chunks from this source document")
 
 
@@ -62,4 +65,4 @@ class DocumentChunk(BaseModel):
     id: str
     content: str
     metadata: DocumentMetadata
-    embedding: Optional[list[float]] = None
+    embedding: list[float] | None = None

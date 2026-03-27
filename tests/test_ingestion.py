@@ -1,6 +1,5 @@
 """Tests for document ingestion pipeline."""
 
-import pytest
 from pathlib import Path
 
 from src.ingestion.loader import _detect_source_type, _generate_doc_id
@@ -9,7 +8,8 @@ from src.models.documents import SourceType
 
 class TestSourceTypeDetection:
     def test_interview_transcript(self):
-        assert _detect_source_type(Path("lazar_interview_1989.txt")) == SourceType.INTERVIEW_TRANSCRIPT
+        result = _detect_source_type(Path("lazar_interview_1989.txt"))
+        assert result == SourceType.INTERVIEW_TRANSCRIPT
 
     def test_government_document(self):
         assert _detect_source_type(Path("foia_release_doe.pdf")) == SourceType.GOVERNMENT_DOCUMENT

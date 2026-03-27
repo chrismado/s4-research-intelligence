@@ -1,13 +1,13 @@
 """Integration tests for the retrieval pipeline."""
 
-import pytest
 from pathlib import Path
 
-from src.ingestion.loader import load_document, load_from_manifest
-from src.ingestion.chunker import chunk_document, chunk_documents
+import pytest
+
+from src.ingestion.chunker import chunk_document
+from src.ingestion.loader import load_from_manifest
 from src.ingestion.vectorstore import VectorStore
-from src.models.documents import SourceType, DocumentMetadata, IngestedDocument
-from src.models.queries import ResearchQuery
+from src.models.documents import DocumentMetadata, IngestedDocument, SourceType
 from src.retrieval.memory import ConversationMemory
 
 
@@ -28,7 +28,11 @@ class TestVectorStoreSearch:
         # Create and ingest a small test doc
         doc = IngestedDocument(
             id="test_doc_1",
-            content="Bob Lazar claimed he worked at S4 near Area 51 in 1988. He described reverse-engineering alien propulsion systems that used Element 115 as fuel.",
+            content=(
+                "Bob Lazar claimed he worked at S4 near Area 51"
+                " in 1988. He described reverse-engineering alien"
+                " propulsion systems that used Element 115 as fuel."
+            ),
             metadata=DocumentMetadata(
                 source_file="test_interview.txt",
                 source_type=SourceType.INTERVIEW_TRANSCRIPT,
@@ -112,7 +116,11 @@ class TestHybridSearch:
         # Two docs — one with a specific keyword, one semantically related
         doc1 = IngestedDocument(
             id="keyword_doc",
-            content="Element 115 was synthesized at JINR Dubna in 2003 by Oganessian. The isotope had a half-life of 87 milliseconds.",
+            content=(
+                "Element 115 was synthesized at JINR Dubna in 2003"
+                " by Oganessian. The isotope had a half-life of"
+                " 87 milliseconds."
+            ),
             metadata=DocumentMetadata(
                 source_file="element115_paper.txt",
                 source_type=SourceType.SCIENTIFIC_PAPER,
@@ -122,7 +130,11 @@ class TestHybridSearch:
         )
         doc2 = IngestedDocument(
             id="semantic_doc",
-            content="The propulsion system used a super-heavy fuel source that generated its own gravitational field when bombarded with protons.",
+            content=(
+                "The propulsion system used a super-heavy fuel source"
+                " that generated its own gravitational field when"
+                " bombarded with protons."
+            ),
             metadata=DocumentMetadata(
                 source_file="lazar_interview.txt",
                 source_type=SourceType.INTERVIEW_TRANSCRIPT,

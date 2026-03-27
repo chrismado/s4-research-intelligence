@@ -58,17 +58,18 @@ Respond in the following JSON structure:
         }}
     ],
     "confidence": 0.0-1.0,
-    "reasoning": "Brief chain-of-thought explaining how you arrived at your answer, which sources you weighted most heavily and why."
+    "reasoning": "Brief chain-of-thought explaining how you arrived at your answer, which sources you weighted most heavily and why."  # noqa: E501
 }}
 
 CRITICAL RULES:
 - If the source material does not contain information to answer the question, say so explicitly. Do NOT hallucinate.
 - Every factual claim MUST have a [Source: filename] citation.
 - Confidence should reflect: number of corroborating sources, source reliability, and directness of evidence.
-- Timeline dates should only be included when explicitly stated in sources, not inferred."""
+- Timeline dates should only be included when explicitly stated in sources, not inferred."""  # noqa: E501
 
 
-CONTRADICTION_DETECTION_PROMPT = """Analyze the following excerpts from different sources about the same topic.
+CONTRADICTION_DETECTION_PROMPT = """\
+Analyze the following excerpts from different sources about the same topic.
 Identify any contradictions, inconsistencies, or notable differences in their accounts.
 
 ## Excerpts

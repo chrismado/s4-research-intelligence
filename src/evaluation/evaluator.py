@@ -94,7 +94,9 @@ class RAGEvaluator:
             "avg_source_recall": sum(r["source_recall"] for r in results) / n,
             "avg_date_coverage": sum(r["date_coverage"] for r in results) / n,
             "citation_rate": sum(r["has_citations"] for r in results) / n,
-            "contradiction_accuracy": sum(r["contradiction_detection_correct"] for r in results) / n,
+            "contradiction_accuracy": sum(
+                r["contradiction_detection_correct"] for r in results
+            ) / n,
             "individual_results": results,
         }
 

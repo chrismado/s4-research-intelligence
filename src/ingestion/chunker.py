@@ -53,5 +53,7 @@ def chunk_documents(documents: list[IngestedDocument]) -> list[DocumentChunk]:
     for doc in documents:
         all_chunks.extend(chunk_document(doc))
 
-    logger.info(f"Total chunks: {len(all_chunks)} from {len(documents)} documents")
+    logger.info(
+        f"Total chunks: {len(all_chunks)} from {len(documents)} documents"
+    )
     return all_chunks

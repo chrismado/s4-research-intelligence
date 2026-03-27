@@ -6,7 +6,6 @@ Stores conversation history so follow-up questions have context.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional
 
 
 @dataclass
@@ -40,7 +39,7 @@ class ConversationMemory:
         if len(self.turns) > self.max_turns:
             self.turns = self.turns[-self.max_turns:]
 
-    def get_context_prompt(self) -> Optional[str]:
+    def get_context_prompt(self) -> str | None:
         """
         Build a context string from conversation history.
 

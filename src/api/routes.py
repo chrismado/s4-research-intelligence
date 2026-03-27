@@ -8,7 +8,7 @@ access and integration with a frontend.
 
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from loguru import logger
 
 from config.settings import settings
@@ -64,7 +64,7 @@ async def research(query: ResearchQuery) -> ResearchResponse:
         return response
     except Exception as e:
         logger.error(f"Research query failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e)) from e
 
 
 @router.post("/research/quick")
@@ -92,7 +92,7 @@ async def conversation_research(query: ResearchQuery) -> ResearchResponse:
         return response
     except Exception as e:
         logger.error(f"Conversation query failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e)) from e
 
 
 # --- Ingestion endpoints ---
@@ -100,8 +100,8 @@ async def conversation_research(query: ResearchQuery) -> ResearchResponse:
 
 @router.post("/ingest/file")
 async def ingest_file(
-    file: UploadFile = File(...),
-    source_type: SourceType = Form(SourceType.PRODUCTION_NOTE),
+    file: UploadFile = File(...),  # noqa: B008
+    source_type: SourceType = Form(SourceType.PRODUCTION_NOTE),  # noqa: B008
     title: str = Form(""),
     author: str = Form(""),
 ):
@@ -114,7 +114,10 @@ async def ingest_file(
     if len(content) > max_bytes:
         raise HTTPException(
             status_code=413,
-            detail=f"File too large ({len(content) // (1024*1024)}MB). Max: {settings.max_upload_size_mb}MB",
+            detail=(
+                f"File too large ({len(content) // (1024*1024)}MB). "
+                f"Max: {settings.max_upload_size_mb}MB"
+            ),
         )
 
     upload_dir = settings.raw_dir

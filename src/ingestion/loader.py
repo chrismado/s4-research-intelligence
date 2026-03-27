@@ -9,7 +9,6 @@ into the source-weighted retrieval pipeline.
 import hashlib
 import json
 from pathlib import Path
-from typing import Optional
 
 from loguru import logger
 
@@ -22,7 +21,7 @@ def _generate_doc_id(filepath: str, content: str) -> str:
     return hashlib.sha256(f"{filepath}:{content[:500]}".encode()).hexdigest()[:16]
 
 
-def _detect_source_type(filepath: Path, manifest_type: Optional[str] = None) -> SourceType:
+def _detect_source_type(filepath: Path, manifest_type: str | None = None) -> SourceType:
     """Infer source type from filename conventions or manifest override."""
     if manifest_type:
         return SourceType(manifest_type)
@@ -75,7 +74,7 @@ def _load_docx(filepath: Path) -> str:
 
 def load_document(
     filepath: Path,
-    metadata_override: Optional[dict] = None,
+    metadata_override: dict | None = None,
 ) -> IngestedDocument:
     """
     Load a single document with metadata extraction.

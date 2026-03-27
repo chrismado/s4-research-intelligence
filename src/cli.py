@@ -21,8 +21,8 @@ app = typer.Typer(name="s4ri", help="S4 Research Intelligence — Documentary Re
 
 @app.command()
 def ingest(
-    manifest: Path = typer.Option(None, help="Path to JSON manifest file"),
-    file: Path = typer.Option(None, help="Path to a single document"),
+    manifest: Path = typer.Option(None, help="Path to JSON manifest file"),  # noqa: B008
+    file: Path = typer.Option(None, help="Path to a single document"),  # noqa: B008
     source_type: str = typer.Option("production_note", help="Source type for single file"),
 ):
     """Ingest documents into the vector store."""
@@ -105,7 +105,11 @@ def query(
             console.print(f"  [{e.date or '?'}] {e.description} (from {e.source})")
 
     # Confidence
-    conf_color = "green" if response.confidence > 0.7 else "yellow" if response.confidence > 0.4 else "red"
+    conf_color = (
+        "green" if response.confidence > 0.7
+        else "yellow" if response.confidence > 0.4
+        else "red"
+    )
     console.print(f"\n[{conf_color}]Confidence: {response.confidence:.0%}[/{conf_color}]")
 
     if response.reasoning:
@@ -137,10 +141,10 @@ def stats():
 
 @app.command()
 def evaluate(
-    test_set: Path = typer.Option(
+    test_set: Path = typer.Option(  # noqa: B008
         "data/evaluation/test_queries.json", help="Path to evaluation test set"
     ),
-    output: Path = typer.Option(None, help="Save results to JSON file"),
+    output: Path = typer.Option(None, help="Save results to JSON file"),  # noqa: B008
 ):
     """Run RAG evaluation pipeline against test queries."""
     import json
@@ -168,9 +172,17 @@ def evaluate(
     # Individual results
     console.print("\n[bold]Individual Results[/bold]")
     for r in results["individual_results"]:
-        conf_color = "green" if r["confidence"] > 0.7 else "yellow" if r["confidence"] > 0.4 else "red"
+        conf_color = (
+            "green" if r["confidence"] > 0.7
+            else "yellow" if r["confidence"] > 0.4
+            else "red"
+        )
         console.print(f"\n  Q: {r['question']}")
-        console.print(f"  Confidence: [{conf_color}]{r['confidence']:.0%}[/{conf_color}] | Sources: {r['num_sources']} | Contradictions: {r['num_contradictions']}")
+        console.print(
+            f"  Confidence: [{conf_color}]{r['confidence']:.0%}"
+            f"[/{conf_color}] | Sources: {r['num_sources']}"
+            f" | Contradictions: {r['num_contradictions']}"
+        )
 
     if output:
         output.write_text(json.dumps(results, indent=2, default=str))

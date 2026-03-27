@@ -14,7 +14,6 @@ from src.models.documents import SourceType
 from src.models.queries import ResearchQuery
 from src.retrieval.pipeline import ResearchPipeline
 
-
 # --- Page config ---
 st.set_page_config(
     page_title="S4 Research Intelligence",
@@ -98,7 +97,11 @@ def render_sources(sources):
     for i, src in enumerate(sources):
         with cols[i % 3]:
             source_type_display = src.source_type.value.replace("_", " ").title()
-            reliability_color = "green" if src.reliability_score >= 0.8 else "orange" if src.reliability_score >= 0.6 else "red"
+            reliability_color = (
+                "green" if src.reliability_score >= 0.8
+                else "orange" if src.reliability_score >= 0.6
+                else "red"
+            )
 
             st.markdown(f"""
 **{src.title}**
@@ -140,7 +143,10 @@ def render_timeline(timeline):
     for event in sorted(timeline, key=lambda e: e.date or ""):
         date_str = event.date or "Unknown date"
         confidence_pct = f"{event.confidence:.0%}"
-        st.markdown(f"**{date_str}** - {event.description} *(from {event.source}, confidence: {confidence_pct})*")
+        st.markdown(
+        f"**{date_str}** - {event.description} "
+        f"*(from {event.source}, confidence: {confidence_pct})*"
+    )
 
 
 def build_conversation_prompt(question: str) -> str:
@@ -197,8 +203,10 @@ def main():
         )
 
         # Execute query
-        with st.chat_message("assistant"):
-            with st.spinner("Searching corpus and generating response..."):
+        with (
+            st.chat_message("assistant"),
+            st.spinner("Searching corpus and generating response..."),
+        ):
                 try:
                     pipeline = get_pipeline()
                     response = pipeline.query(rq)
@@ -207,7 +215,11 @@ def main():
                     st.markdown(response.answer)
 
                     # Confidence indicator
-                    conf_color = "green" if response.confidence > 0.7 else "orange" if response.confidence > 0.4 else "red"
+                    conf_color = (
+                        "green" if response.confidence > 0.7
+                        else "orange" if response.confidence > 0.4
+                        else "red"
+                    )
                     st.markdown(f"**Confidence:** :{conf_color}[{response.confidence:.0%}]")
 
                     if response.reasoning:

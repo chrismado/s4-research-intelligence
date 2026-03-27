@@ -42,7 +42,8 @@ class VectorStore:
         self._bm25_corpus: list[dict] | None = None
 
         logger.info(
-            f"VectorStore ready: {self._collection.count()} chunks in '{settings.chroma_collection}'"
+            f"VectorStore ready: {self._collection.count()} chunks "
+            f"in '{settings.chroma_collection}'"
         )
 
     @property
