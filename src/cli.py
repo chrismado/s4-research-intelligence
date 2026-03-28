@@ -106,9 +106,7 @@ def query(
 
     # Confidence
     conf_color = (
-        "green" if response.confidence > 0.7
-        else "yellow" if response.confidence > 0.4
-        else "red"
+        "green" if response.confidence > 0.7 else "yellow" if response.confidence > 0.4 else "red"
     )
     console.print(f"\n[{conf_color}]Confidence: {response.confidence:.0%}[/{conf_color}]")
 
@@ -173,9 +171,7 @@ def evaluate(
     console.print("\n[bold]Individual Results[/bold]")
     for r in results["individual_results"]:
         conf_color = (
-            "green" if r["confidence"] > 0.7
-            else "yellow" if r["confidence"] > 0.4
-            else "red"
+            "green" if r["confidence"] > 0.7 else "yellow" if r["confidence"] > 0.4 else "red"
         )
         console.print(f"\n  Q: {r['question']}")
         console.print(
@@ -187,6 +183,63 @@ def evaluate(
     if output:
         output.write_text(json.dumps(results, indent=2, default=str))
         console.print(f"\n[green]Results saved to {output}[/green]")
+
+
+@app.command(name="eval")
+def eval_cmd(
+    all_tests: bool = typer.Option(False, "--all", help="Run all evaluation tests"),
+    hallucination: bool = typer.Option(
+        False, "--hallucination", help="Run hallucination detection"
+    ),
+    adversarial: bool = typer.Option(False, "--adversarial", help="Run adversarial tests"),
+    benchmark: bool = typer.Option(False, "--benchmark", help="Run benchmarks"),
+    regression: bool = typer.Option(False, "--regression", help="Run regression checks"),
+    quantization: bool = typer.Option(False, "--quantization", help="Run quantization benchmarks"),
+    compare: bool = typer.Option(False, "--compare", help="A/B compare agent vs RAG"),
+    report: Path = typer.Option(  # noqa: B008
+        None, "--report", help="Save markdown report"
+    ),
+    dashboard: bool = typer.Option(False, "--dashboard", help="Show terminal dashboard"),
+):
+    """Run the evaluation suite."""
+    from src.evaluation.suite import EvalSuite
+
+    suite = EvalSuite()
+    results = {}
+
+    if all_tests:
+        results = suite.run_all()
+    else:
+        if hallucination:
+            results["hallucination"] = suite.run_hallucination().to_dict()
+        if adversarial:
+            results["adversarial"] = suite.run_adversarial().to_dict()
+        if benchmark:
+            results["benchmarks"] = suite.run_benchmarks()
+        if regression:
+            results["regression"] = suite.run_regression().to_dict()
+        if quantization:
+            results["quantization"] = suite.run_quantization().to_dict()
+        if compare:
+            results["ab_comparison"] = suite.run_compare().to_dict()
+        if not results:
+            results["golden_set"] = suite.run_golden_set().to_dict()
+
+    if dashboard:
+        from src.evaluation.report.terminal import TerminalDashboard
+
+        dash = TerminalDashboard()
+        dash.display(results)
+    else:
+        console.print(f"[green]Evaluation complete.[/green] " f"{len(results)} module(s) ran.")
+
+    if report:
+        from src.evaluation.report.markdown import MarkdownReporter
+
+        reporter = MarkdownReporter()
+        md = reporter.generate(results)
+        report.write_text(md)
+        console.print(f"[green]Report saved to {report}[/green]")
 
 
 @app.command()

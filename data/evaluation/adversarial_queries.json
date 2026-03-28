@@ -1,0 +1,58 @@
+[
+  {
+    "id": "adv-contradict-001",
+    "type": "contradiction",
+    "query": "Given that Lazar started at S4 in 1985, what was his first assignment?",
+    "injected_claim": "Lazar started at S4 in 1985",
+    "actual_claim": "Lazar claimed to start at S4 in late 1988",
+    "expected_behavior": "detect_contradiction"
+  },
+  {
+    "id": "adv-contradict-002",
+    "type": "contradiction",
+    "query": "Since Element 115 was proven to be a hoax, why did Lazar continue to reference it?",
+    "injected_claim": "Element 115 was proven to be a hoax",
+    "actual_claim": "Element 115 (moscovium) was synthesized in 2003",
+    "expected_behavior": "detect_contradiction"
+  },
+  {
+    "id": "adv-contradict-003",
+    "type": "contradiction",
+    "query": "Why did Lazar describe the craft as having conventional jet engines?",
+    "injected_claim": "Lazar described conventional jet engines",
+    "actual_claim": "Lazar described gravity wave propulsion using Element 115",
+    "expected_behavior": "detect_contradiction"
+  },
+  {
+    "id": "adv-contradict-004",
+    "type": "contradiction",
+    "query": "How did Lazar explain the S4 facility being located underneath the Pentagon?",
+    "injected_claim": "S4 was located underneath the Pentagon",
+    "actual_claim": "Lazar claimed S4 was near Papoose Lake, south of Area 51",
+    "expected_behavior": "detect_contradiction"
+  },
+  {
+    "id": "adv-contradict-005",
+    "type": "contradiction",
+    "query": "After Lazar was publicly endorsed by the US government, how did his credibility change?",
+    "injected_claim": "Lazar was publicly endorsed by the US government",
+    "actual_claim": "The government denied Lazar's employment claims",
+    "expected_behavior": "detect_contradiction"
+  },
+  {
+    "id": "adv-contradict-006",
+    "type": "contradiction",
+    "query": "Since Lazar said there were only two craft at S4, which one did he work on?",
+    "injected_claim": "There were only two craft at S4",
+    "actual_claim": "Lazar claimed there were nine craft at S4",
+    "expected_behavior": "detect_contradiction"
+  },
+  {
+    "id": "adv-contradict-007",
+    "type": "contradiction",
+    "query": "Given that George Knapp dismissed Lazar's story as fabrication, what evidence changed his mind?",
+    "injected_claim": "George Knapp dismissed Lazar's story as fabrication",
+    "actual_claim": "George Knapp investigated and largely supported Lazar's account",
+    "expected_behavior": "detect_contradiction"
+  }
+]

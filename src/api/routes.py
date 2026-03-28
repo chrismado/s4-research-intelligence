@@ -178,3 +178,81 @@ async def store_stats():
         "embedding_model": settings.embedding_model,
         "llm_model": settings.llm_model,
     }
+
+
+# --- Evaluation endpoints ---
+
+_eval_results: dict[str, dict] = {}
+_eval_status: dict[str, str] = {}
+
+_VALID_EVAL_MODULES = {
+    "golden_set",
+    "hallucination",
+    "adversarial",
+    "benchmarks",
+    "regression",
+    "quantization",
+    "compare",
+    "scaling",
+}
+
+
+@router.post("/eval/run")
+async def run_eval(
+    modules: list[str] = Form(default=["golden_set"]),  # noqa: B008
+):
+    """Launch an evaluation run (async, returns run_id)."""
+    import threading
+    import uuid
+
+    from src.evaluation.suite import EvalSuite
+
+    invalid = [m for m in modules if m not in _VALID_EVAL_MODULES]
+    if invalid:
+        raise HTTPException(
+            status_code=400,
+            detail=(f"Unknown eval module(s): {invalid}. " f"Valid: {sorted(_VALID_EVAL_MODULES)}"),
+        )
+
+    run_id = str(uuid.uuid4())[:8]
+    _eval_status[run_id] = "running"
+
+    def _run():
+        suite = EvalSuite()
+        results = {}
+        for mod in modules:
+            runner = getattr(suite, f"run_{mod}", None)
+            if runner:
+                result = runner()
+                results[mod] = result.to_dict() if hasattr(result, "to_dict") else result
+        _eval_results[run_id] = results
+        _eval_status[run_id] = "complete"
+
+    threading.Thread(target=_run, daemon=True).start()
+    return {"run_id": run_id, "status": "running"}
+
+
+@router.get("/eval/status/{run_id}")
+async def eval_status(run_id: str):
+    """Check the status of an evaluation run."""
+    status = _eval_status.get(run_id)
+    if status is None:
+        raise HTTPException(status_code=404, detail=f"Run not found: {run_id}")
+    return {"run_id": run_id, "status": status}
+
+
+@router.get("/eval/report/{run_id}")
+async def eval_report(run_id: str):
+    """Get the results of a completed evaluation run."""
+    if run_id not in _eval_results:
+        status = _eval_status.get(run_id)
+        if status == "running":
+            raise HTTPException(status_code=202, detail="Evaluation still running")
+        raise HTTPException(status_code=404, detail=f"Run not found: {run_id}")
+    return _eval_results[run_id]
+
+
+@router.get("/eval/history")
+async def eval_history():
+    """List all evaluation runs."""
+    return [{"run_id": rid, "status": _eval_status[rid]} for rid in _eval_status]

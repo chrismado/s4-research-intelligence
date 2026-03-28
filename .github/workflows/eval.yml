@@ -1,0 +1,34 @@
+name: S4 Eval Suite
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -e ".[eval,dev]"
+
+      - name: Lint evaluation code
+        run: ruff check src/evaluation/ tests/test_evaluation/
+
+      - name: Run evaluation unit tests
+        run: pytest tests/test_evaluation/ -v --tb=short
+
+      - name: Run regression tests (if corpus available)
+        run: |
+          if [ -d "data/vectors" ]; then
+            s4ri eval --regression --report eval_report.md
+          else
+            echo "Skipping regression tests — no vector store available in CI"
+          fi
