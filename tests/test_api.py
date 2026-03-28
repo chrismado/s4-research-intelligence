@@ -39,9 +39,8 @@ async def test_research_query_validation(transport):
     """Test that empty questions are rejected."""
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         resp = await client.post("/api/v1/research", json={"question": ""})
-        # Empty string should still be accepted (not None)
-        # but very long strings should be rejected
-        assert resp.status_code in (200, 422, 500)
+        # Empty string may be accepted or rejected by validation
+        assert resp.status_code == 422, f"Expected 422 for empty question, got {resp.status_code}"
 
 
 @pytest.mark.asyncio

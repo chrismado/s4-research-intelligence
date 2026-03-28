@@ -94,6 +94,7 @@ class VectorStore:
             added += len(batch)
             logger.debug(f"Upserted batch {i // batch_size + 1}: {len(batch)} chunks")
 
+        self.invalidate_bm25()
         logger.info(f"Added {added} chunks to vector store (total: {self.count})")
         return added
 

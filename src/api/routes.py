@@ -64,7 +64,7 @@ async def research(query: ResearchQuery) -> ResearchResponse:
         return response
     except Exception as e:
         logger.error(f"Research query failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e)) from e
+        raise HTTPException(status_code=500, detail="Internal server error") from e
 
 
 @router.post("/research/quick")
@@ -92,7 +92,7 @@ async def conversation_research(query: ResearchQuery) -> ResearchResponse:
         return response
     except Exception as e:
         logger.error(f"Conversation query failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e)) from e
+        raise HTTPException(status_code=500, detail="Internal server error") from e
 
 
 # --- Ingestion endpoints ---
@@ -122,7 +122,10 @@ async def ingest_file(
 
     upload_dir = settings.raw_dir
     upload_dir.mkdir(parents=True, exist_ok=True)
-    filepath = upload_dir / file.filename
+    safe_filename = Path(file.filename).name
+    if not safe_filename:
+        raise HTTPException(status_code=400, detail="Invalid filename")
+    filepath = upload_dir / safe_filename
     filepath.write_bytes(content)
 
     # Load, chunk, embed
@@ -148,10 +151,14 @@ async def ingest_file(
 async def ingest_manifest(manifest_path: str = Form(...)):
     """Ingest documents from a JSON manifest file."""
     store = _get_store()
-    path = Path(manifest_path)
+    path = Path(manifest_path).resolve()
+    data_dir = Path(settings.raw_dir).resolve().parent
+
+    if not str(path).startswith(str(data_dir)):
+        raise HTTPException(status_code=400, detail="Manifest path must be within the data directory")
 
     if not path.exists():
-        raise HTTPException(status_code=404, detail=f"Manifest not found: {path}")
+        raise HTTPException(status_code=404, detail="Manifest not found")
 
     docs = load_from_manifest(path)
     chunks = chunk_documents(docs)

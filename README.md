@@ -1,6 +1,6 @@
 # S4 Research Intelligence
 
-**RAG-powered documentary research assistant** built for [S4: The Bob Lazar Story](https://www.imdb.com/title/tt0000000/) — a feature-length documentary investigating Bob Lazar's claims about reverse-engineering extraterrestrial technology at a facility known as S4 near Area 51.
+**RAG-powered documentary research assistant** built for S4: The Bob Lazar Story — a feature-length documentary investigating Bob Lazar's claims about reverse-engineering extraterrestrial technology at a facility known as S4 near Area 51.
 
 This system ingests a heterogeneous research corpus (interview transcripts, FOIA documents, scientific papers, archival references, production notes) and provides conversational querying with **source-weighted retrieval**, **contradiction detection**, and **timeline extraction**.
 
