@@ -1,8 +1,8 @@
 # S4 Research Intelligence
 
-**RAG-powered documentary research assistant** built for [S4: The Bob Lazar Story](https://www.imdb.com/title/tt0000000/) — a feature-length documentary investigating Bob Lazar's claims about reverse-engineering extraterrestrial technology at a facility known as S4 near Area 51.
+**Autonomous multi-agent research system** built for [S4: The Bob Lazar Story](https://www.imdb.com/title/tt0000000/) — a feature-length documentary investigating Bob Lazar's claims about reverse-engineering extraterrestrial technology at a facility known as S4 near Area 51.
 
-This system ingests a heterogeneous research corpus (interview transcripts, FOIA documents, scientific papers, archival references, production notes) and provides conversational querying with **source-weighted retrieval**, **contradiction detection**, and **timeline extraction**.
+This system ingests a heterogeneous research corpus (interview transcripts, FOIA documents, scientific papers, archival references, production notes) and provides **multi-agent orchestrated research** with source-weighted retrieval, cross-referencing, timeline extraction, fact-checking, and full decision tracing.
 
 ## Why This Exists
 
@@ -10,40 +10,89 @@ Producing a documentary about one of the most contested stories in modern histor
 
 I built the visual AI pipelines for S4 (environment generation, de-aging, neural compositing). This is the knowledge AI — a production tool for navigating the research corpus with the same rigor I apply to the visual pipeline.
 
-## Features
-
-**Source-Weighted Retrieval** — Retrieved results are scored by a weighted combination of semantic similarity (65%) and source reliability (35%). Government FOIA documents and scientific papers rank higher than news articles at the same semantic similarity. This produces research-grade results where provenance matters.
-
-**Contradiction Detection** — When sources disagree on facts, dates, or claims, the system flags contradictions with citations from both sides and an analysis of which source carries stronger provenance.
-
-**Timeline Extraction** — Extracts chronological events from retrieved sources with confidence scoring. Only includes dates explicitly stated in sources — never inferred.
-
-**Rich Metadata & Filtering** — Every document carries structured metadata: source type, author, date, subjects, classification, reliability score. Queries can filter by any combination.
-
-**Evaluation Pipeline** — Built-in quality measurement with test queries and ground truth. Tracks citation rate, source recall, contradiction detection accuracy, and answer confidence.
-
 ## Architecture
 
 ```
-Query → Vector Search (ChromaDB) → Source-Weighted Reranking → Context Assembly
-  → LLM Generation (Mistral 7B via Ollama) → Structured JSON Response
-      → Answer with citations
-      → Contradiction alerts
-      → Timeline events
-      → Confidence score with reasoning trace
+                         +-------------------+
+                         |   Orchestrator    |
+                         |   (LangGraph      |
+                         |    StateGraph)     |
+                         +--------+----------+
+                                  |
+                    Plan -> Dispatch -> Execute -> Synthesize -> Evaluate
+                                  |                                 |
+                                  |                          (retry if low
+                                  |                           confidence)
+                    +-------------+-------------+
+                    |             |             |             |
+              +-----+----+ +----+-----+ +-----+----+ +-----+-----+
+              |  Corpus  | |  Cross-  | | Timeline | |   Fact-   |
+              |  Search  | |Reference | |  Agent   | |  Checker  |
+              +-----+----+ +----+-----+ +-----+----+ +-----+-----+
+                    |             |             |             |
+              +-----+----+ +----+-----+ +-----+----+ +-----+-----+
+              | Hybrid   | | 6 Source | |  Date    | | Verdict:  |
+              | BM25 +   | |  Types   | | Validate | | VERIFIED  |
+              | Semantic  | | Compare  | | + Sort   | | DISPUTED  |
+              +----------+ +----------+ +----------+ | CONTRA-   |
+                    |                                  | DICTED    |
+              +-----+----+                            | UNVERIF-  |
+              | ChromaDB |                            | IABLE     |
+              | Vector   |                            +-----------+
+              | Store    |
+              +----------+
 ```
+
+The orchestrator classifies each query (factual, timeline, verification, exploration), plans which agents to invoke, dispatches them, synthesizes results with citations, and self-evaluates. If confidence is below 0.4, it retries (up to 2x).
+
+## Features
+
+### Multi-Agent Orchestration (LangGraph)
+
+The system dispatches specialized sub-agents based on query type:
+
+- **Corpus Search Agent** — Hybrid search (BM25 + semantic) with source-weighted reranking. Combined score = relevance (65%) + reliability (35%).
+- **Cross-Reference Agent** — Searches 6 source types for corroborating/contradicting evidence. Produces a structured report with agreement levels.
+- **Timeline Agent** — Extracts chronological events with date validation, flags temporal conflicts across sources.
+- **Fact-Check Agent** — Assigns verdicts (VERIFIED / DISPUTED / UNVERIFIABLE / CONTRADICTED) with evidence citations and confidence scores.
+
+Not every query invokes every agent. Simple factual lookups use only corpus search. Complex verification queries dispatch all four.
+
+### Source-Weighted Retrieval
+
+Retrieved results are scored by a weighted combination of semantic similarity (65%) and source reliability (35%). Government FOIA documents and scientific papers rank higher than news articles at the same semantic similarity.
+
+### Observability & Tracing
+
+Every agent query produces a full decision trace:
+- Which agents were planned and why
+- What each agent found (or didn't find)
+- Synthesis reasoning and confidence calibration
+- Self-evaluation scores (completeness, citation quality, balance)
+- Real UTC timestamps and duration for every step
+
+Traces are stored in-memory and available via the `/research/agent/trace/{trace_id}` endpoint. Langfuse integration is supported when configured; structured JSON logging is the fallback.
+
+### Contradiction Detection
+
+When sources disagree on facts, dates, or claims, the system flags contradictions with citations from both sides and an analysis of which source carries stronger provenance.
+
+### Evaluation Pipeline
+
+Built-in quality measurement with test queries and ground truth. Includes hallucination detection, adversarial testing, performance benchmarks, regression tracking, and A/B comparison (agent vs RAG).
 
 ## Tech Stack
 
 | Component | Technology |
 |---|---|
-| Orchestration | LangChain |
+| Agent Orchestration | LangGraph StateGraph |
 | Vector Store | ChromaDB (cosine similarity, persistent) |
 | Embeddings | sentence-transformers/all-MiniLM-L6-v2 |
 | LLM | Mistral 7B Instruct (via Ollama) — fully local, no API keys |
+| Observability | Langfuse + structured JSON fallback |
 | API | FastAPI with async support |
 | CLI | Typer + Rich |
-| Containerization | Docker Compose (app + Ollama with GPU passthrough) |
+| Frontend | Streamlit with SSE streaming |
 | Evaluation | Custom suite — pynvml, rouge-score, NLTK (no ragas/deepeval) |
 | Language | Python 3.10+ |
 
@@ -51,7 +100,7 @@ Query → Vector Search (ChromaDB) → Source-Weighted Reranking → Context Ass
 
 ```bash
 # Clone and install
-git clone https://github.com/chrismatteau/s4-research-intelligence.git
+git clone https://github.com/chrismado/s4-research-intelligence.git
 cd s4-research-intelligence
 pip install -e ".[dev]"
 
@@ -61,58 +110,94 @@ ollama pull mistral:7b-instruct-v0.3-q5_K_M
 # Copy environment config
 cp .env.example .env
 
-# Ingest your research corpus
-python -m src.cli ingest --manifest data/raw/manifest.example.json
+# Ingest the research corpus
+python -c "
+from src.ingestion.loader import load_from_manifest
+from src.ingestion.chunker import chunk_documents
+from src.ingestion.vectorstore import VectorStore
+from pathlib import Path
 
-# Query
-python -m src.cli query "What did Bob Lazar claim about Element 115?"
+docs = load_from_manifest(Path('data/raw/manifest.json'))
+chunks = chunk_documents(docs)
+store = VectorStore()
+store.add_chunks(chunks)
+print(f'Ingested {len(docs)} documents -> {store.count} chunks')
+"
+
+# Run a multi-agent research query
+python -c "from src.cli import app; app()" agent "What did Bob Lazar claim about Element 115?" --show-trace
 
 # Start the API server
-python -m src.cli serve
-# → http://localhost:8000/docs for interactive API docs
+python -c "from src.cli import app; app()" serve
+# -> http://localhost:8000/docs for interactive API docs
+
+# Launch the Streamlit frontend
+python -c "from src.cli import app; app()" ui
 ```
 
-### Docker
-
-```bash
-cd docker
-docker compose up -d
-# API available at http://localhost:8000
-# Ollama available at http://localhost:11434
-```
-
-## Usage Examples
+## Usage
 
 ### CLI
 
 ```bash
-# Basic research query
-s4ri query "What government documents reference the Nevada Test Site?"
+# Multi-agent research (with decision trace)
+s4ri agent "Do government documents corroborate the S4 facility?" --show-trace
 
-# Filtered by source type
+# Direct RAG query
 s4ri query "What did Lazar say about propulsion?" --source-type interview_transcript
 
-# More retrieval depth
-s4ri query "Timeline of Lazar's public appearances" --top-k 10
+# A/B compare agent vs RAG
+s4ri evaluate --compare-agent
+
+# Full evaluation suite
+s4ri eval --all --dashboard
+
+# Vector store stats
+s4ri stats
 ```
 
-### API
+### API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/research/agent` | Multi-agent orchestrated research query |
+| GET | `/api/v1/research/agent/trace/{trace_id}` | Full decision trace for a query |
+| POST | `/api/v1/research/agent/stream` | SSE streaming of agent execution |
+| POST | `/api/v1/research` | Direct RAG query |
+| POST | `/api/v1/research/conversation` | Multi-turn RAG with memory |
+| POST | `/api/v1/ingest/file` | Upload and ingest a document |
+| POST | `/api/v1/ingest/manifest` | Batch ingest from manifest |
+| GET | `/api/v1/store/stats` | Vector store statistics |
+| POST | `/api/v1/eval/run` | Launch async evaluation run |
+| GET | `/api/v1/eval/status/{id}` | Check eval run status |
+| GET | `/api/v1/eval/report/{id}` | Get completed eval results |
+| GET | `/api/v1/eval/history` | List all eval runs |
+
+### Example: Agent Query
 
 ```bash
-# Research query with filters
-curl -X POST http://localhost:8000/api/v1/research \
+curl -X POST http://localhost:8000/api/v1/research/agent \
   -H "Content-Type: application/json" \
-  -d '{
-    "question": "What is the relationship between Element 115 and gravity propulsion?",
-    "source_types": ["interview_transcript", "scientific_paper"],
-    "include_contradictions": true
-  }'
+  -d '{"question": "Is it true that Lazar worked at Los Alamos?"}'
+```
 
-# Upload a new document
-curl -X POST http://localhost:8000/api/v1/ingest/file \
-  -F "file=@new_interview.txt" \
-  -F "source_type=interview_transcript" \
-  -F "title=New Lazar Interview 2025"
+Response includes synthesis with citations, fact-check verdicts, corpus results with relevance/reliability scores, and a `trace_id` for full decision trace retrieval.
+
+### Example: Decision Trace
+
+```
++ orchestrator.plan (5869ms)
+  {"query_type": "factual", "agents_planned": ["corpus_search", "fact_check"]}
++ orchestrator.dispatch (0ms)
+  {"dispatched": ["corpus_search", "fact_check"]}
++ corpus_search.search_and_analyze (3166ms)
+  {"result_count": 8}
++ fact_check.verdict (6674ms)
+  {"verdict": "DISPUTED", "reason": "conflicting_evidence"}
++ orchestrator.synthesize (4371ms)
+  {"confidence": 0.96, "sources_count": 3}
++ orchestrator.evaluate (4215ms)
+  {"overall_score": 0.96, "should_retry": false}
 ```
 
 ## Source Reliability Weights
@@ -130,106 +215,44 @@ curl -X POST http://localhost:8000/api/v1/ingest/file \
 
 ## Evaluation Suite
 
-Production-grade evaluation and benchmarking framework — built from scratch with no external eval libraries (no ragas, no deepeval, no trulens).
+Production-grade evaluation and benchmarking framework — built from scratch with no external eval libraries.
 
 ### Golden Test Set
 
-41 ground-truth Q&A pairs spanning four query types, all drawn from the S4/Bob Lazar research corpus:
+41 ground-truth Q&A pairs spanning four query types:
 
 | Type | Count | Example |
 |------|-------|---------|
-| Factual | 11 | "What element did Lazar claim was used as nuclear fuel in the alien craft?" |
-| Timeline | 10 | "When did Lazar first take friends to watch test flights near S4?" |
-| Verification | 10 | "Did Lazar's W-2 from the Department of Naval Intelligence list a valid EIN?" |
-| Cross-reference | 10 | "Which of Lazar's claims about the layout of S4 are corroborated by other sources?" |
-
-Each case includes expected answer keywords, difficulty level, and query type metadata for per-dimension scoring.
+| Factual | 11 | "What element did Lazar claim was used as nuclear fuel?" |
+| Timeline | 10 | "When did Lazar first take friends to watch test flights?" |
+| Verification | 10 | "Did Lazar's W-2 from Naval Intelligence list a valid EIN?" |
+| Cross-reference | 10 | "Which claims about S4's layout are corroborated?" |
 
 ### Hallucination Detection
 
-Three-phase pipeline that operates without an LLM-as-judge:
-
-1. **Claim Extraction** — NLTK sentence tokenization with regex-based filtering (strips hedging, meta-commentary, compound splitting)
-2. **Source Matching** — Each claim is searched against the ChromaDB vector store. Cosine similarity above the support threshold (default 0.75) marks a claim as grounded; negation detection flags contradictions
-3. **Scoring** — Computes grounding score, hallucination rate, and fabrication rate per response. Batch aggregation with trend tracking over time
+Three-phase pipeline (no LLM-as-judge): claim extraction via NLTK, source matching against ChromaDB, and grounding/fabrication scoring.
 
 ### Adversarial Testing
 
-Three attack categories with heuristic-based detection:
-
 | Attack Type | Cases | What It Tests |
 |-------------|-------|---------------|
-| Contradiction Injection | 7 | Embeds a false premise in the query — does the system correct it? |
-| Unanswerable Queries | 8 | Questions with no answer in the corpus — does the system abstain? |
-| Prompt Injection | 8 | Instruction override, role hijack, data exfiltration — does the system resist? |
-
-Overall adversarial score is a weighted aggregate: 30% contradiction + 30% abstention + 40% injection resistance.
+| Contradiction Injection | 7 | False premise — does the system correct it? |
+| Unanswerable Queries | 8 | No answer in corpus — does it abstain? |
+| Prompt Injection | 8 | Instruction override, role hijack, data exfil |
 
 ### Performance Benchmarks
 
-| Benchmark | Metrics | Implementation |
-|-----------|---------|----------------|
-| Latency | p50/p95/p99, per-component (embedding, retrieval, LLM, TTFT) | `time.perf_counter()` with warmup queries |
-| Throughput | QPS at concurrency levels [1, 2, 4, 8], error rate | `ThreadPoolExecutor` |
-| VRAM | Per-GPU baseline/peak/delta via pynvml | Background sampling thread during inference |
-| KV Cache Quantization | FP16/INT8/INT4 tokens/s, VRAM, TTFT, perplexity delta, max context | llama.cpp `--cache-type-k`/`--cache-type-v` with Ollama fallback |
-| Corpus Scaling | Accuracy vs data volume at 25/50/75/100% | Proportional top_k reduction |
-
-KV cache quantization benchmarks are inspired by TurboQuant (March 2026).
-
-### Regression Tracking
-
-- Saves each eval run's metrics to JSON history files
-- Compares current run against the most recent previous run
-- Configurable thresholds: warning (5% drop) and critical (10% drop)
-- Tracks 9 metrics: pass rate, relevance, completeness, source accuracy, confidence calibration, grounding score, contradiction detection, abstention, injection resistance
+Latency profiling (p50/p95/p99), throughput (QPS at concurrency 1/2/4/8), VRAM monitoring via pynvml, KV cache quantization (FP16/INT8/INT4), and corpus scaling analysis.
 
 ### A/B Comparison
 
-Paired t-test (implemented from scratch, no scipy) comparing RAG vs Agent pipelines across 5 metrics. Reports statistical significance (p < 0.05) and determines per-metric and overall winner.
-
-### Reports
-
-Three output formats:
-
-- **Markdown** — Full report with tables for every section, written to `docs/eval_report.md`
-- **JSON** — Machine-readable export with pass/fail status for CI/CD (`exit code 1` on critical regressions)
-- **Terminal Dashboard** — Rich tables with colored status badges, progress bars during eval runs
-
-### CLI
+Paired t-test comparing Agent vs RAG pipelines across confidence, source recall, date coverage, and latency.
 
 ```bash
-# Run everything
-s4ri eval --all --dashboard
-
-# Individual modules
-s4ri eval --hallucination
-s4ri eval --adversarial
-s4ri eval --benchmark
-s4ri eval --regression
-s4ri eval --quantization
-s4ri eval --compare              # A/B: Agent vs RAG
-
-# Save report
-s4ri eval --all --report eval_report.md
+s4ri eval --all --dashboard       # Full suite with terminal dashboard
+s4ri eval --compare               # A/B: Agent vs RAG
+s4ri eval --all --report report.md  # Save markdown report
 ```
-
-### API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/eval/run` | Launch async eval run (accepts module list) |
-| GET | `/eval/status/{id}` | Check run status |
-| GET | `/eval/report/{id}` | Get completed results |
-| GET | `/eval/history` | List all runs |
-
-### CI/CD
-
-GitHub Actions workflow (`.github/workflows/eval.yml`) runs on every push and PR to main:
-
-1. Lint eval code with ruff
-2. Run 62 eval unit tests
-3. Run regression checks (if vector store available)
 
 ## Project Structure
 
@@ -237,33 +260,40 @@ GitHub Actions workflow (`.github/workflows/eval.yml`) runs on every push and PR
 s4-research-intelligence/
 ├── config/settings.py              # Central configuration
 ├── src/
+│   ├── agents/                     # Multi-agent orchestration layer
+│   │   ├── orchestrator.py         # LangGraph StateGraph (plan/dispatch/synth/eval)
+│   │   ├── corpus_search.py        # Hybrid search + LLM analysis agent
+│   │   ├── cross_reference.py      # Cross-source corroboration agent
+│   │   ├── timeline_agent.py       # Chronological event extraction agent
+│   │   ├── fact_checker.py         # Verdict assignment agent
+│   │   ├── state.py                # ResearchState TypedDict (shared state)
+│   │   └── tools.py                # Agent tool wrappers (LLM, search, trace)
+│   ├── observability/              # Tracing and metrics
+│   │   ├── tracer.py               # Langfuse + JSON fallback tracer
+│   │   └── metrics.py              # Agent and pipeline metrics
 │   ├── ingestion/                  # Document loading, chunking, embedding
 │   ├── retrieval/                  # RAG pipeline with source-weighted reranking
 │   ├── api/                        # FastAPI REST interface
 │   ├── models/                     # Pydantic schemas
-│   ├── prompts/                    # Engineered prompt templates
-│   ├── evaluation/
-│   │   ├── evaluator.py            # Original RAG evaluator (preserved)
+│   ├── prompts/                    # System prompts for all agents
+│   │   └── agent_prompts.py        # 8 specialized prompt constants
+│   ├── evaluation/                 # Full eval suite
+│   │   ├── evaluator.py            # RAG + Agent evaluator with A/B compare
 │   │   ├── suite.py                # Eval suite orchestrator
-│   │   ├── hallucination/          # Claim extraction → source matching → scoring
-│   │   ├── adversarial/            # Contradiction, unanswerable, injection tests
-│   │   ├── benchmarks/             # Latency, throughput, VRAM, quantization, scaling
-│   │   ├── regression/             # Golden set runner, tracker, A/B comparator
-│   │   ├── report/                 # Markdown, JSON, terminal dashboard
-│   │   └── datasets/               # Dataset loader
-│   └── cli.py                      # Command-line interface
+│   │   ├── hallucination/          # Claim extraction -> source matching
+│   │   ├── adversarial/            # Contradiction, unanswerable, injection
+│   │   ├── benchmarks/             # Latency, throughput, VRAM, quantization
+│   │   ├── regression/             # Golden set, tracker, A/B comparator
+│   │   └── report/                 # Markdown, JSON, terminal dashboard
+│   ├── frontend/app.py             # Streamlit UI with SSE agent streaming
+│   └── cli.py                      # Typer CLI (ingest, query, agent, eval, serve, ui)
 ├── tests/
-│   └── test_evaluation/            # 62 unit tests across 7 test files
+│   ├── test_agents.py              # 32 agent tests
+│   └── test_evaluation/            # 62 eval tests
 ├── data/
-│   ├── raw/                        # Source documents (not committed)
-│   └── evaluation/
-│       ├── golden_queries.json     # 41 ground-truth Q&A pairs
-│       ├── adversarial_queries.json
-│       ├── unanswerable_queries.json
-│       ├── contradiction_sets.json
-│       └── injection_prompts.json
-├── .github/workflows/eval.yml      # CI pipeline
-├── docker/                         # Containerization
+│   ├── raw/                        # Source documents + manifest
+│   └── evaluation/                 # Golden queries, adversarial sets
+├── .pre-commit-config.yaml         # Ruff + pytest hooks
 └── pyproject.toml
 ```
 
