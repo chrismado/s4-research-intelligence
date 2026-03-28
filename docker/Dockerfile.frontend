@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install only frontend dependencies
+COPY pyproject.toml ./
+RUN pip install --no-cache-dir streamlit httpx sseclient-py
+
+# Copy application code
+COPY src/ src/
+COPY config/ config/
+COPY .streamlit/ .streamlit/
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "src/frontend/app.py", "--server.address=0.0.0.0", "--server.port=8501"]

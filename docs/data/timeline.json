@@ -1,0 +1,138 @@
+{
+  "id": "timeline",
+  "query": "What is the chronological sequence of Lazar's public disclosures between 1988 and 1990?",
+  "description": "Timeline construction — corpus search + timeline agent",
+  "recorded_at": "2026-03-27T14:32:15Z",
+  "total_duration_ms": 6014,
+  "result": {
+    "synthesis": "Bob Lazar's public disclosures followed a carefully escalating pattern from anonymous source to named public figure between 1988 and 1990. The timeline begins with Lazar allegedly starting work at S4 in late 1988, followed by private disclosures to close associates including John Lear in early 1989. The pivotal moment came in May 1989 when Lazar, under the pseudonym 'Dennis', appeared in a silhouetted interview on KLAS-TV Las Vegas with journalist George Knapp. Lazar then participated in several alleged UFO viewing trips to the Groom Lake area in March-April 1989, one of which led to his detection by security. By November 1989, Lazar appeared on camera with his real identity revealed in the full KLAS-TV broadcast 'UFOs: The Best Evidence.' Through 1990, Lazar gave additional interviews and public talks, solidifying his public narrative.",
+    "confidence": 0.79,
+    "query_type": "timeline",
+    "research_plan": [
+      {"agent": "corpus_search", "reason": "Retrieve all chronological references to Lazar's disclosures", "depends_on": [], "priority": 0},
+      {"agent": "timeline", "reason": "Timeline query requires chronological event extraction and ordering", "depends_on": ["corpus_search"], "priority": 1}
+    ],
+    "corpus_results": [
+      {
+        "content": "In late 1988, Lazar claims he was recruited to work at S4 through a contact at Los Alamos. He describes being driven to the facility south of Area 51 and shown nine disc-shaped craft in hangars built into the mountainside at Papoose Lake.",
+        "source_file": "lazar_klas_interview_1989.txt",
+        "source_type": "interview_transcript",
+        "relevance_score": 0.88,
+        "reliability_score": 0.70,
+        "combined_score": 0.817,
+        "excerpt": "In late 1988, Lazar claims he was recruited to work at S4..."
+      },
+      {
+        "content": "The first public broadcast featuring Lazar aired on KLAS-TV in May 1989, with Lazar appearing in silhouette under the pseudonym 'Dennis.' George Knapp conducted the interview, which described Lazar's claims about reverse-engineering alien technology at a secret facility near Area 51.",
+        "source_file": "lazar_klas_interview_1989.txt",
+        "source_type": "interview_transcript",
+        "relevance_score": 0.91,
+        "reliability_score": 0.70,
+        "combined_score": 0.836,
+        "excerpt": "The first public broadcast featuring Lazar aired on KLAS-TV in May 1989..."
+      },
+      {
+        "content": "According to production research notes, Lazar organized several trips to view alleged test flights near Groom Lake between March and April 1989. On one such trip, Lazar brought friends including Gene Huff and John Lear to a vantage point on public land. They were detected by security personnel, and Lazar was subsequently called in for debriefing.",
+        "source_file": "production_notes_s4_film.md",
+        "source_type": "production_note",
+        "relevance_score": 0.85,
+        "reliability_score": 0.50,
+        "combined_score": 0.728,
+        "excerpt": "Lazar organized several trips to view alleged test flights near Groom Lake..."
+      },
+      {
+        "content": "The full KLAS-TV investigation 'UFOs: The Best Evidence' aired in November 1989, featuring Lazar with his real name and face shown on camera for the first time. This broadcast reached a national audience and established Lazar as the primary public source for claims about Area 51 and S4.",
+        "source_file": "lazar_klas_interview_1989.txt",
+        "source_type": "interview_transcript",
+        "relevance_score": 0.90,
+        "reliability_score": 0.70,
+        "combined_score": 0.830,
+        "excerpt": "The full KLAS-TV investigation aired in November 1989..."
+      }
+    ],
+    "cross_ref_results": {},
+    "timeline_results": [
+      {"date": "1988-12-01", "description": "Lazar allegedly begins work at S4 facility near Papoose Lake", "source": "lazar_klas_interview_1989.txt", "confidence": 0.65, "category": "professional"},
+      {"date": "1989-01-15", "description": "Lazar confides in friend John Lear about S4 work", "source": "production_notes_s4_film.md", "confidence": 0.55, "category": "personal"},
+      {"date": "1989-03-22", "description": "First viewing trip to Groom Lake area with associates", "source": "production_notes_s4_film.md", "confidence": 0.60, "category": "personal"},
+      {"date": "1989-04-07", "description": "Detected by security during viewing trip; debriefed and warned", "source": "production_notes_s4_film.md", "confidence": 0.58, "category": "professional"},
+      {"date": "1989-05-15", "description": "First anonymous KLAS-TV interview airs (silhouette, pseudonym 'Dennis')", "source": "lazar_klas_interview_1989.txt", "confidence": 0.90, "category": "media"},
+      {"date": "1989-11-13", "description": "Full KLAS-TV broadcast with real identity: 'UFOs: The Best Evidence'", "source": "lazar_klas_interview_1989.txt", "confidence": 0.92, "category": "media"},
+      {"date": "1990-03-01", "description": "Lazar gives public talks and additional media interviews", "source": "production_notes_s4_film.md", "confidence": 0.70, "category": "media"}
+    ],
+    "fact_check_results": [],
+    "sources_cited": [
+      {"source_file": "lazar_klas_interview_1989.txt"},
+      {"source_file": "production_notes_s4_film.md"}
+    ],
+    "retries": 0,
+    "trace_id": "trace_tl_c9f5e3a7"
+  },
+  "trace": {
+    "trace_id": "trace_tl_c9f5e3a7",
+    "query": "What is the chronological sequence of Lazar's public disclosures between 1988 and 1990?",
+    "query_type": "timeline",
+    "research_plan": [
+      {"agent": "corpus_search", "reason": "Retrieve all chronological references to Lazar's disclosures", "depends_on": [], "priority": 0},
+      {"agent": "timeline", "reason": "Timeline query requires chronological event extraction and ordering", "depends_on": ["corpus_search"], "priority": 1}
+    ],
+    "retries": 0,
+    "confidence": 0.79,
+    "trace": [
+      {
+        "node": "orchestrator",
+        "action": "analyze_query",
+        "timestamp": "2026-03-27T14:32:15.100Z",
+        "duration_ms": 165,
+        "inputs": {"query": "What is the chronological sequence of Lazar's public disclosures between 1988 and 1990?"},
+        "outputs": {"query_type": "timeline", "agents_planned": ["corpus_search", "timeline"], "reasoning": "Explicit timeline query with date range. Requires timeline agent for chronological extraction and ordering."},
+        "error": null
+      },
+      {
+        "node": "orchestrator",
+        "action": "dispatch",
+        "timestamp": "2026-03-27T14:32:15.265Z",
+        "duration_ms": 6,
+        "inputs": {"plan": [{"agent": "corpus_search"}, {"agent": "timeline"}]},
+        "outputs": {"dispatched": ["corpus_search", "timeline"], "skipped": ["cross_reference", "fact_check"]},
+        "error": null
+      },
+      {
+        "node": "corpus_search",
+        "action": "search_and_analyze",
+        "timestamp": "2026-03-27T14:32:15.271Z",
+        "duration_ms": 1534,
+        "inputs": {"query": "Lazar disclosures 1988 1989 1990 chronological", "top_k": 8},
+        "outputs": {"result_count": 7, "top_sources": ["lazar_klas_interview_1989.txt", "production_notes_s4_film.md"], "findings": "Multiple dated events found across interview and production sources", "key_claims": ["Late 1988 start at S4", "May 1989 anonymous interview", "November 1989 full reveal"], "gaps": ["Exact dates for some events unclear"]},
+        "error": null
+      },
+      {
+        "node": "timeline",
+        "action": "extract_and_order",
+        "timestamp": "2026-03-27T14:32:16.805Z",
+        "duration_ms": 2687,
+        "inputs": {"corpus_results": 7, "date_range": "1988-1990"},
+        "outputs": {"events_extracted": 7, "date_conflicts": 0, "categories": {"personal": 2, "professional": 2, "media": 3}, "span": "1988-12 to 1990-03"},
+        "error": null
+      },
+      {
+        "node": "orchestrator",
+        "action": "synthesize",
+        "timestamp": "2026-03-27T14:32:19.492Z",
+        "duration_ms": 1378,
+        "inputs": {"agents_completed": ["corpus_search", "timeline"], "events": 7},
+        "outputs": {"synthesis_length": 697, "sources_cited": 2, "confidence": 0.79},
+        "error": null
+      },
+      {
+        "node": "orchestrator",
+        "action": "evaluate",
+        "timestamp": "2026-03-27T14:32:20.870Z",
+        "duration_ms": 98,
+        "inputs": {"confidence": 0.79, "threshold": 0.4},
+        "outputs": {"passed": true, "retry": false, "reasoning": "Confidence 0.79 exceeds threshold. Timeline is coherent with no contradictions."},
+        "error": null
+      }
+    ]
+  }
+}

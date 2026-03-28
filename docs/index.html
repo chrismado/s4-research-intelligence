@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S4 Research Intelligence — Multi-Agent Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0E1117;--surface:#161B22;--border:#30363D;--text:#E6EDF3;--muted:#8B949E;--accent:#4A9EFF;--green:#3FB950;--yellow:#D29922;--red:#F85149;--mono:'JetBrains Mono',monospace;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;min-height:100vh}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.container{max-width:1100px;margin:0 auto;padding:1.5rem}
+header{text-align:center;padding:2rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+header h1{font-size:1.6rem;letter-spacing:0.04em;font-weight:600}
+header p{color:var(--muted);margin:0.3rem 0}
+header .links{margin-top:0.5rem;font-size:0.85rem;color:var(--muted)}
+header .links a{margin:0 0.5rem}
+.query-bar{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-bottom:1.5rem}
+.query-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.5rem 1rem;border-radius:6px;cursor:pointer;font-size:0.82rem;font-family:var(--sans);transition:border-color .2s,background .2s}
+.query-btn:hover{border-color:var(--accent);background:#1a2233}
+.query-btn.active{border-color:var(--accent);background:#1a2233;color:var(--accent)}
+.query-header{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;margin-bottom:1rem}
+.query-header .label{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+.query-header .question{font-size:1.05rem;margin:0.3rem 0}
+.query-header .meta{font-size:0.8rem;color:var(--muted)}
+.query-header .meta span{margin-right:1.2rem}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+@media(max-width:720px){.columns{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem}
+.panel h3{font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.7rem}
+.plan-item{font-size:0.85rem;margin-bottom:0.5rem;padding-left:0.8rem;border-left:2px solid var(--accent)}
+.plan-item .agent-name{color:var(--accent);font-family:var(--mono);font-size:0.8rem}
+.plan-item .reason{color:var(--muted);font-size:0.78rem}
+.trace-step{display:flex;align-items:center;gap:0.6rem;padding:0.4rem 0;font-size:0.85rem;opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s}
+.trace-step.visible{opacity:1;transform:translateY(0)}
+.trace-step .icon{width:18px;text-align:center;flex-shrink:0}
+.trace-step .icon.done{color:var(--green)}
+.trace-step .icon.skip{color:var(--muted)}
+.trace-step .name{flex:1;font-family:var(--mono);font-size:0.8rem}
+.trace-step .dur{color:var(--muted);font-family:var(--mono);font-size:0.78rem;min-width:50px;text-align:right}
+.answer-panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.2rem;margin-bottom:1rem}
+.answer-panel h3{font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.7rem}
+.answer-text{font-size:0.9rem;line-height:1.7;margin-bottom:1rem}
+.sources-row{display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:1rem}
+.source-card{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:0.5rem 0.75rem;font-size:0.78rem;transition:border-color .2s}
+.source-card:hover{border-color:var(--accent)}
+.source-card .file{font-family:var(--mono);color:var(--accent);font-size:0.75rem}
+.source-card .type{color:var(--muted);font-size:0.72rem;text-transform:capitalize}
+.source-card .scores{color:var(--muted);font-size:0.72rem;margin-top:0.2rem}
+.conf-row{display:flex;align-items:center;gap:0.8rem;font-size:0.85rem}
+.conf-bar{flex:1;max-width:200px;height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+.conf-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.verdict-badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:4px;font-size:0.72rem;font-weight:600;font-family:var(--mono);text-transform:uppercase;margin-left:0.5rem}
+.verdict-VERIFIED{background:#1a3a1a;color:var(--green)}
+.verdict-DISPUTED{background:#3a2a0a;color:var(--yellow)}
+.verdict-UNVERIFIABLE{background:#2a1a0a;color:#E09020}
+.verdict-CONTRADICTED{background:#3a1a1a;color:var(--red)}
+.timeline-list{margin:0.5rem 0}
+.tl-event{display:flex;gap:0.7rem;padding:0.35rem 0;font-size:0.82rem;border-left:2px solid var(--border);padding-left:0.8rem;margin-left:0.3rem}
+.tl-event .tl-date{font-family:var(--mono);color:var(--accent);min-width:90px;font-size:0.78rem}
+.tl-event .tl-cat{font-size:0.7rem;color:var(--muted);margin-left:auto;text-transform:capitalize}
+.inspector{margin-bottom:1.5rem}
+.inspector summary{cursor:pointer;font-size:0.82rem;color:var(--muted);padding:0.5rem 0}
+.inspector pre{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:var(--mono);font-size:0.72rem;overflow-x:auto;max-height:400px;overflow-y:auto;color:var(--muted);line-height:1.5}
+.sys-info{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;font-size:0.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:0.3rem 1.5rem}
+.sys-info span{white-space:nowrap}
+.cross-ref{margin-top:0.8rem;font-size:0.82rem}
+.cross-ref .cr-section{margin-bottom:0.5rem}
+.cross-ref .cr-label{font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em}
+.cross-ref .cr-item{padding-left:0.8rem;border-left:2px solid var(--border);margin:0.3rem 0;font-size:0.8rem}
+.cr-item.corr{border-color:var(--green)}.cr-item.contra{border-color:var(--red)}.cr-item.unres{border-color:var(--yellow)}
+#loading{text-align:center;color:var(--muted);padding:3rem 0;font-size:0.9rem}
+.hidden{display:none}
+.query-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.trace-step{opacity:1;transform:none;transition:none}.conf-fill{transition:none}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>S4 RESEARCH INTELLIGENCE</h1>
+    <p>Autonomous multi-agent research system for documentary fact-checking</p>
+    <div class="links">Built by Chris Matteau &nbsp;|&nbsp; <a href="https://github.com/chrismado/s4-research-intelligence" target="_blank">GitHub</a></div>
+  </header>
+
+  <div id="loading">Loading demo traces&hellip;</div>
+  <div id="app" class="hidden">
+    <div class="query-bar" id="queryBar"></div>
+    <div id="queryHeader" class="query-header hidden"></div>
+    <div class="columns">
+      <div class="panel" id="planPanel"><h3>Research Plan</h3><div id="planContent"></div></div>
+      <div class="panel" id="tracePanel"><h3>Execution Trace</h3><div id="traceContent"></div></div>
+    </div>
+    <div id="answerPanel" class="answer-panel hidden"></div>
+    <details class="inspector" id="inspector"><summary>&#9656; Trace Inspector (raw JSON)</summary><pre id="jsonPre"></pre></details>
+    <div class="sys-info">
+      <span><b>Model:</b> Mistral 7B (Ollama)</span>
+      <span><b>Embeddings:</b> all-MiniLM-L6-v2</span>
+      <span><b>Vector Store:</b> ChromaDB</span>
+      <span><b>Framework:</b> LangGraph</span>
+      <span><b>GPU:</b> 4&times; RTX 4090</span>
+      <span><b>Agents:</b> corpus_search, cross_reference, timeline, fact_check</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const ALL_AGENTS = ['corpus_search', 'cross_reference', 'timeline', 'fact_check'];
+const $ = s => document.querySelector(s);
+let manifest = null, cache = {}, _pendingTimers = [];
+
+function _clearTimers() { _pendingTimers.forEach(t => clearTimeout(t)); _pendingTimers = []; }
+
+async function load(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`Failed to load ${url}`);
+  return r.json();
+}
+
+function confColor(c) { c = Math.max(0, Math.min(1, c)); return c >= 0.8 ? 'var(--green)' : c >= 0.5 ? 'var(--yellow)' : 'var(--red)'; }
+
+function renderPlan(plan, queryType) {
+  const dispatched = plan.map(p => p.agent);
+  const skipped = ALL_AGENTS.filter(a => !dispatched.includes(a));
+  let h = `<div style="margin-bottom:0.6rem;font-size:0.82rem"><span style="color:var(--muted)">Query type:</span> <span style="color:var(--accent);font-family:var(--mono)">${queryType}</span></div>`;
+  plan.forEach(p => {
+    h += `<div class="plan-item"><div class="agent-name">${p.agent}</div><div class="reason">${p.reason}</div></div>`;
+  });
+  if (skipped.length) {
+    h += `<div style="margin-top:0.7rem;font-size:0.78rem;color:var(--muted)">Skipped: ${skipped.map(s => `<span style="font-family:var(--mono)">${s}</span>`).join(', ')}</div>`;
+  }
+  $('#planContent').innerHTML = h;
+}
+
+function renderTrace(trace) {
+  const steps = trace.trace || [];
+  let h = '';
+  steps.forEach((s, i) => {
+    const label = s.node === 'orchestrator' ? s.action : `${s.node}`;
+    const dur = s.duration_ms < 1000 ? `${s.duration_ms}ms` : `${(s.duration_ms/1000).toFixed(1)}s`;
+    h += `<div class="trace-step" data-idx="${i}"><span class="icon done">&#10003;</span><span class="name">${label}</span><span class="dur">${dur}</span></div>`;
+  });
+  const dispatched = (trace.research_plan || []).map(p => p.agent);
+  const skipped = ALL_AGENTS.filter(a => !dispatched.includes(a));
+  skipped.forEach(s => {
+    h += `<div class="trace-step visible"><span class="icon skip">&mdash;</span><span class="name" style="color:var(--muted)">${s}</span><span class="dur" style="color:var(--muted)">skipped</span></div>`;
+  });
+  $('#traceContent').innerHTML = h;
+  // Animate steps
+  const els = document.querySelectorAll('.trace-step[data-idx]');
+  els.forEach((el, i) => _pendingTimers.push(setTimeout(() => el.classList.add('visible'), 300 + i * 350)));
+}
+
+function renderAnswer(result) {
+  const r = result;
+  let h = '<h3>Answer</h3>';
+  h += `<div class="answer-text">${r.synthesis}</div>`;
+
+  // Fact check verdicts
+  if (r.fact_check_results && r.fact_check_results.length) {
+    r.fact_check_results.forEach(fc => {
+      h += `<div style="margin-bottom:0.8rem"><span class="verdict-badge verdict-${fc.verdict}">${fc.verdict}</span> <span style="font-size:0.82rem;margin-left:0.3rem">${fc.claim}</span><div style="font-size:0.78rem;color:var(--muted);margin-top:0.2rem">${fc.reasoning}</div></div>`;
+    });
+  }
+
+  // Cross-reference
+  if (r.cross_ref_results && r.cross_ref_results.summary) {
+    const cr = r.cross_ref_results;
+    h += `<div class="cross-ref"><div class="cr-label">Cross-Reference Analysis</div>`;
+    (cr.corroborating||[]).forEach(c => h += `<div class="cr-item corr"><b>${c.source_type}</b>: ${c.evidence} <span style="color:var(--muted)">(${c.source})</span></div>`);
+    (cr.contradicting||[]).forEach(c => h += `<div class="cr-item contra"><b>${c.source_type}</b>: ${c.evidence} <span style="color:var(--muted)">(${c.source})</span></div>`);
+    (cr.unresolved||[]).forEach(c => h += `<div class="cr-item unres">${c.note} <span style="color:var(--muted)">(${c.source})</span></div>`);
+    h += `<div style="font-size:0.78rem;color:var(--muted);margin-top:0.3rem">${cr.summary}</div></div>`;
+  }
+
+  // Timeline events
+  if (r.timeline_results && r.timeline_results.length) {
+    h += `<div style="margin-top:0.8rem"><div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.3rem">Timeline</div><div class="timeline-list">`;
+    r.timeline_results.forEach(e => {
+      h += `<div class="tl-event"><span class="tl-date">${e.date}</span><span>${e.description}</span><span class="tl-cat">${e.category}</span></div>`;
+    });
+    h += `</div></div>`;
+  }
+
+  // Sources
+  h += `<div style="margin-top:1rem"><div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.4rem">Sources</div><div class="sources-row">`;
+  (r.corpus_results||[]).forEach(s => {
+    const type = (s.source_type||'').replace(/_/g,' ');
+    h += `<div class="source-card"><div class="file">${s.source_file}</div><div class="type">${type}</div><div class="scores">relevance: ${s.relevance_score.toFixed(2)} &middot; reliability: ${s.reliability_score.toFixed(2)} &middot; combined: ${s.combined_score.toFixed(3)}</div></div>`;
+  });
+  h += `</div></div>`;
+
+  // Confidence bar
+  const c = Math.max(0, Math.min(1, r.confidence || 0));
+  h += `<div class="conf-row"><span>Confidence:</span><div class="conf-bar"><div class="conf-fill" style="width:${c*100}%;background:${confColor(c)}"></div></div><span style="font-family:var(--mono)">${c.toFixed(2)}</span></div>`;
+
+  const panel = $('#answerPanel');
+  panel.innerHTML = h;
+  panel.classList.remove('hidden');
+}
+
+async function selectQuery(id) {
+  _clearTimers();
+  document.querySelectorAll('.query-btn').forEach(b => b.classList.toggle('active', b.dataset.id === id));
+
+  let data;
+  try {
+    if (!cache[id]) cache[id] = await load(`data/${id}.json`);
+    data = cache[id];
+  } catch (e) {
+    $('#answerPanel').innerHTML = `<h3>Error</h3><div class="answer-text" style="color:var(--red)">Failed to load trace for "${id}": ${e.message}</div>`;
+    $('#answerPanel').classList.remove('hidden');
+    return;
+  }
+
+  // Query header
+  const qh = $('#queryHeader');
+  qh.innerHTML = `<div class="label">Query</div><div class="question">"${data.query}"</div><div class="meta"><span>Type: <b>${data.result.query_type}</b></span><span>Duration: <b>${(data.total_duration_ms/1000).toFixed(1)}s</b></span><span>Agents: <b>${data.result.research_plan.length}</b></span></div>`;
+  qh.classList.remove('hidden');
+
+  renderPlan(data.result.research_plan, data.result.query_type);
+  renderTrace(data.trace);
+
+  // Delay answer to let trace animate
+  const panel = $('#answerPanel');
+  panel.classList.add('hidden');
+  const delay = (data.trace.trace||[]).length * 350 + 400;
+  _pendingTimers.push(setTimeout(() => renderAnswer(data.result), delay));
+
+  // JSON inspector
+  $('#jsonPre').textContent = JSON.stringify(data.trace, null, 2);
+}
+
+async function init() {
+  try {
+    manifest = await load('data/manifest.json');
+  } catch {
+    $('#loading').textContent = 'Error loading demo data. Make sure data/manifest.json exists.';
+    return;
+  }
+  const bar = $('#queryBar');
+  manifest.queries.forEach(q => {
+    const btn = document.createElement('button');
+    btn.className = 'query-btn';
+    btn.dataset.id = q.id;
+    btn.textContent = q.id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    btn.title = q.description;
+    btn.onclick = () => selectQuery(q.id);
+    bar.appendChild(btn);
+  });
+  $('#loading').classList.add('hidden');
+  $('#app').classList.remove('hidden');
+  selectQuery(manifest.queries[0].id);
+}
+
+init();
+</script>
+</body>
+</html>
