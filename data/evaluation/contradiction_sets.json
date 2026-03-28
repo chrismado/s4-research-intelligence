@@ -1,0 +1,50 @@
+[
+  {
+    "id": "contra-001",
+    "claim_a": "Lazar began working at S4 in late 1988.",
+    "source_a": "interview_transcript",
+    "claim_b": "Lazar never had any involvement with S4 or Area 51.",
+    "source_b": "government_document",
+    "contradiction_type": "direct_denial"
+  },
+  {
+    "id": "contra-002",
+    "claim_a": "Lazar holds degrees from MIT and Caltech.",
+    "source_a": "interview_transcript",
+    "claim_b": "Neither MIT nor Caltech have records of Lazar's enrollment.",
+    "source_b": "news_article",
+    "contradiction_type": "evidence_conflict"
+  },
+  {
+    "id": "contra-003",
+    "claim_a": "Element 115 serves as a stable fuel source for gravity propulsion.",
+    "source_a": "interview_transcript",
+    "claim_b": "Synthesized moscovium (Element 115) is highly unstable with a half-life under one second.",
+    "source_b": "scientific_paper",
+    "contradiction_type": "scientific_conflict"
+  },
+  {
+    "id": "contra-004",
+    "claim_a": "S4 housed nine extraterrestrial craft of different designs.",
+    "source_a": "interview_transcript",
+    "claim_b": "No physical evidence or satellite imagery has confirmed an S4 facility at Papoose Lake.",
+    "source_b": "government_document",
+    "contradiction_type": "evidence_absence"
+  },
+  {
+    "id": "contra-005",
+    "claim_a": "Lazar's W-2 from the Department of Naval Intelligence confirms his employment.",
+    "source_a": "interview_transcript",
+    "claim_b": "The W-2 contained formatting inconsistencies not found in authentic government documents.",
+    "source_b": "news_article",
+    "contradiction_type": "authenticity_dispute"
+  },
+  {
+    "id": "contra-006",
+    "claim_a": "Lazar passed multiple polygraph tests confirming his truthfulness.",
+    "source_a": "interview_transcript",
+    "claim_b": "Polygraph results were inconclusive on key questions about S4.",
+    "source_b": "news_article",
+    "contradiction_type": "interpretation_conflict"
+  }
+]

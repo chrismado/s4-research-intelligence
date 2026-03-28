@@ -10,118 +10,34 @@ Chris Matteau — Montreal-based ML engineer, self-taught, 7 years production ex
 
 This is NOT a tutorial clone. It's a production tool grounded in real documentary research.
 
-## What's Already Scaffolded
+## Current Project Structure
 
-The full project structure is in place with working code for:
+See `CLAUDE.md` for the authoritative module map and architecture details. The README has the full directory tree.
 
-```
-s4-research-intelligence/
-├── config/settings.py          # Pydantic settings with env var overrides
-├── src/
-│   ├── ingestion/
-│   │   ├── loader.py           # Multi-format doc loader with metadata extraction
-│   │   ├── chunker.py          # Recursive chunking with metadata propagation
-│   │   └── vectorstore.py      # ChromaDB wrapper with HuggingFace embeddings
-│   ├── retrieval/
-│   │   └── pipeline.py         # Full RAG pipeline with source-weighted reranking
-│   ├── api/
-│   │   ├── app.py              # FastAPI factory
-│   │   └── routes.py           # REST endpoints for research, ingestion, stats
-│   ├── models/
-│   │   ├── documents.py        # Document/chunk schemas with rich metadata
-│   │   └── queries.py          # Query/response models with citations, contradictions, timeline
-│   ├── prompts/
-│   │   └── templates.py        # Engineered prompts for research, contradiction detection, timeline
-│   ├── evaluation/
-│   │   └── evaluator.py        # RAG quality evaluation with test queries
-│   └── cli.py                  # Typer CLI: ingest, query, serve, stats
-├── tests/
-│   ├── test_models.py          # Schema validation tests
-│   └── test_ingestion.py       # Loader and chunker tests
-├── docker/
-│   ├── Dockerfile
-│   └── docker-compose.yml      # App + Ollama with GPU passthrough
-├── data/
-│   ├── raw/manifest.example.json    # Example manifest showing metadata structure
-│   └── evaluation/test_queries.json # 5 evaluation queries with ground truth
-├── pyproject.toml              # Dependencies, scripts, tooling config
-├── .env.example
-└── .gitignore
-```
+## What's Been Built (Completed)
 
-## What Needs To Be Done
+All original phases are done. Here's what exists:
 
-### Phase 1: Get It Running (Priority)
+- **Full RAG pipeline** — ingestion, chunking, embedding, source-weighted retrieval, hybrid search (BM25 + semantic)
+- **Multi-agent orchestration** — LangGraph StateGraph with 4 agents (corpus_search, cross_reference, timeline, fact_check), conditional routing, retry logic
+- **Streamlit frontend** — chat UI with agent/RAG mode toggle, SSE streaming
+- **Evaluation framework** — 6 modules (hallucination, adversarial, benchmarks, regression, quantization, A/B), 64 dedicated tests
+- **Static demo** — GitHub Pages site (`docs/`) with pre-recorded agent traces, zero backend required
+- **Observability** — Langfuse/JSON tracing, agent metrics
+- **Docker** — compose files for full stack and demo mode
+- **CI/CD** — GitHub Actions for lint+test (ci.yml), eval suite (eval.yml), Pages deployment (pages.yml)
+- **129 tests passing**, ruff clean
 
-1. **Install dependencies and verify imports**
-   - `pip install -e ".[dev]"` — fix any dependency conflicts
-   - Ensure all imports resolve correctly (the project uses relative imports from `src/`)
-   - You may need to add a `conftest.py` with sys.path setup for pytest
+## What Could Be Done Next
 
-2. **Test with sample data**
-   - Chris needs to populate `data/raw/` with his actual S4 research files (transcripts, PDFs, notes)
-   - For now, create 2-3 synthetic sample documents so the pipeline can be tested end-to-end:
-     - A fake interview transcript (~500 words)
-     - A fake government document excerpt (~300 words)
-     - A fake production note (~200 words)
-   - All should reference Bob Lazar, S4, Area 51, Element 115 so queries have something to retrieve
+These are stretch goals, not blockers:
 
-3. **Verify the full pipeline works end-to-end**
-   - `python -m src.cli ingest --manifest data/raw/manifest.example.json`
-   - `python -m src.cli query "What did Bob Lazar claim about Element 115?"`
-   - `python -m src.cli serve` → hit `http://localhost:8000/docs`
-   - Fix any runtime errors in the pipeline
-
-4. **Run tests**
-   - `pytest tests/ -v`
-   - Fix any failures, add missing test coverage
-
-### Phase 2: Make It Impressive
-
-5. **Add a Streamlit or Gradio frontend** (optional but high-impact for demos)
-   - Simple chat interface that sends queries to the FastAPI backend
-   - Show sources panel with relevance/reliability scores
-   - Timeline visualization for extracted events
-   - Contradiction alerts with side-by-side source comparison
-   - This makes it demo-able in an interview — "let me show you"
-
-6. **Add conversation memory / multi-turn**
-   - Store conversation history so follow-up questions have context
-   - "What about his educational claims?" should know we're still talking about Lazar
-   - Use LangChain's ConversationBufferMemory or similar
-
-7. **Add the RAGAS evaluation integration**
-   - Wire up `src/evaluation/evaluator.py` to use RAGAS metrics properly
-   - Generate evaluation reports that can be shown in the README
-   - This demonstrates MLOps maturity — you don't just build, you measure
-
-8. **Add hybrid search (semantic + keyword)**
-   - ChromaDB supports metadata filtering, but adding BM25 keyword search
-     alongside vector search improves retrieval for specific names/dates
-   - Use LangChain's EnsembleRetriever to combine both
-
-### Phase 3: Production Polish
-
-9. **Add proper logging and monitoring**
-   - Structured JSON logging with loguru
-   - Query latency tracking
-   - Token usage tracking per query
-   - This shows "I think about production systems" not just "I can make it work"
-
-10. **Add async support**
-    - The FastAPI routes are async but the pipeline is synchronous
-    - Make the Ollama calls async using `httpx` or `ollama`'s async client
-    - This matters for the CGI role which mentions production deployment
-
-11. **Write integration tests**
-    - Test the full pipeline with a small test corpus
-    - Test API endpoints with httpx test client
-    - Test that metadata filters actually filter correctly
-
-12. **AWS deployment option**
-    - Add Terraform or CDK config for deploying to AWS (EC2 + S3)
-    - Or at minimum, document the deployment architecture
-    - CGI explicitly wants AWS/Azure/GCP experience
+1. **Record real traces** — run `scripts/record_demo_traces.py` on a GPU box with Ollama to replace hand-crafted demo JSON with actual pipeline output
+2. **Parallel agent execution** — sub-agents currently run sequentially via LangGraph edges; cross_reference + timeline could run in parallel
+3. **Agent conversation memory** — multi-turn not supported for agent queries (RAG mode has it)
+4. **AWS/cloud deployment** — Terraform or CDK for EC2 + S3 deployment (CGI wants cloud experience)
+5. **Langfuse integration** — tracer is wired but needs `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` env vars
+6. **Demo GIF/screenshot** — add a visual to the README showing the Streamlit or static demo
 
 ## Key Architecture Decisions (Don't Change These)
 

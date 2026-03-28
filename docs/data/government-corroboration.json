@@ -1,0 +1,186 @@
+{
+  "id": "government-corroboration",
+  "query": "Do government documents corroborate Lazar's claim about the S4 facility location?",
+  "description": "Cross-reference — all four agents dispatched",
+  "recorded_at": "2026-03-27T14:33:30Z",
+  "total_duration_ms": 9847,
+  "result": {
+    "synthesis": "Government documents provide partial but inconclusive corroboration of Lazar's claims about the S4 facility location. FOIA-released DOE documents from 1994 acknowledge the existence of operations at the Nevada Test Site and Groom Lake (Area 51), but make no explicit reference to a facility designated 'S4' at Papoose Lake. Lazar described S4 as being located at the base of the Papoose Range, south of Groom Lake, built into the mountainside with hangar doors designed to blend with the desert terrain. Satellite imagery analysis has identified what some researchers interpret as construction activity near Papoose Lake, but government sources have neither confirmed nor denied any facility at that specific location. The government's acknowledgment of Area 51's existence in 2013 (via a CIA FOIA release) lends indirect credibility to the broader geographic claims, but the specific S4 designation remains unverified in any declassified document.",
+    "confidence": 0.58,
+    "query_type": "verification",
+    "research_plan": [
+      {"agent": "corpus_search", "reason": "Retrieve all S4 location references across document types", "depends_on": [], "priority": 0},
+      {"agent": "cross_reference", "reason": "Cross-reference government docs against interview claims", "depends_on": ["corpus_search"], "priority": 1},
+      {"agent": "fact_check", "reason": "Produce verdict on corroboration claim", "depends_on": ["corpus_search", "cross_reference"], "priority": 2},
+      {"agent": "timeline", "reason": "Order government disclosures chronologically", "depends_on": ["corpus_search"], "priority": 1}
+    ],
+    "corpus_results": [
+      {
+        "content": "FOIA documents released by the Department of Energy in 1994 reference operations at the Nevada Test Site, including acknowledgment of facilities at Groom Lake. The documents describe environmental monitoring programs and reference multiple testing areas, but do not mention a facility designated 'S4' or any operations at Papoose Lake.",
+        "source_file": "area51_foia_doe_1994.txt",
+        "source_type": "government_document",
+        "relevance_score": 0.91,
+        "reliability_score": 0.95,
+        "combined_score": 0.924,
+        "excerpt": "FOIA documents released by the Department of Energy in 1994 reference operations at the Nevada Test Site..."
+      },
+      {
+        "content": "Lazar described the S4 facility as being located at the base of the Papoose Range, approximately 15 miles south of Groom Lake. He stated the facility consisted of hangar doors built directly into the mountainside, disguised to look like the natural desert terrain. Inside, he claimed there were nine hangars, each containing a disc-shaped craft of extraterrestrial origin.",
+        "source_file": "lazar_klas_interview_1989.txt",
+        "source_type": "interview_transcript",
+        "relevance_score": 0.93,
+        "reliability_score": 0.70,
+        "combined_score": 0.849,
+        "excerpt": "Lazar described the S4 facility as being located at the base of the Papoose Range..."
+      },
+      {
+        "content": "The polygraph examination results from 1989 indicated that Lazar showed no signs of deception when describing the location of S4 and his transportation route to the facility. However, the examiner noted that Lazar appeared to exhibit stress responses when asked about the specific nature of his work and the number of craft he observed.",
+        "source_file": "lazar_polygraph_results.txt",
+        "source_type": "archival_reference",
+        "relevance_score": 0.78,
+        "reliability_score": 0.85,
+        "combined_score": 0.805,
+        "excerpt": "The polygraph examination results indicated no signs of deception regarding S4 location..."
+      },
+      {
+        "content": "Production research for the S4 documentary included analysis of satellite imagery of the Papoose Lake area. Researchers identified what appeared to be road construction and earthmoving activity consistent with the timeframe Lazar described, though the resolution was insufficient for definitive identification of structures.",
+        "source_file": "production_notes_s4_film.md",
+        "source_type": "production_note",
+        "relevance_score": 0.75,
+        "reliability_score": 0.50,
+        "combined_score": 0.663,
+        "excerpt": "Production research included analysis of satellite imagery of the Papoose Lake area..."
+      }
+    ],
+    "cross_ref_results": {
+      "claim": "S4 facility exists at the base of the Papoose Range, south of Groom Lake",
+      "corroborating": [
+        {"source": "lazar_klas_interview_1989.txt", "source_type": "interview_transcript", "evidence": "Detailed description of S4 location, layout, and transportation route", "reliability": 0.70},
+        {"source": "lazar_polygraph_results.txt", "source_type": "archival_reference", "evidence": "Polygraph indicates no deception on location claims", "reliability": 0.85},
+        {"source": "production_notes_s4_film.md", "source_type": "production_note", "evidence": "Satellite imagery shows possible construction activity at described location", "reliability": 0.50}
+      ],
+      "contradicting": [
+        {"source": "area51_foia_doe_1994.txt", "source_type": "government_document", "evidence": "FOIA documents make no mention of S4 or Papoose Lake facilities", "reliability": 0.95}
+      ],
+      "unresolved": [
+        {"source": "area51_foia_doe_1994.txt", "source_type": "government_document", "note": "Absence of mention is not proof of non-existence; documents may be redacted or classified"}
+      ],
+      "summary": "Interview and polygraph evidence support the claim; government documents neither confirm nor deny. Satellite imagery is suggestive but inconclusive."
+    },
+    "timeline_results": [
+      {"date": "1989-05-15", "description": "Lazar first publicly describes S4 location on KLAS-TV", "source": "lazar_klas_interview_1989.txt", "confidence": 0.90, "category": "media"},
+      {"date": "1989-06-20", "description": "Polygraph examination conducted on Lazar's claims", "source": "lazar_polygraph_results.txt", "confidence": 0.85, "category": "personal"},
+      {"date": "1994-08-15", "description": "DOE FOIA documents released covering Nevada Test Site operations", "source": "area51_foia_doe_1994.txt", "confidence": 0.98, "category": "government"},
+      {"date": "2013-08-15", "description": "CIA acknowledges Area 51 existence via FOIA release", "source": "area51_foia_doe_1994.txt", "confidence": 0.99, "category": "government"}
+    ],
+    "fact_check_results": [
+      {
+        "claim": "Government documents corroborate S4 facility at Papoose Lake",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.45,
+        "supporting_sources": [
+          {"source": "lazar_polygraph_results.txt", "source_type": "archival_reference", "evidence": "Polygraph supports truthfulness of location claims", "reliability": 0.85}
+        ],
+        "contradicting_sources": [
+          {"source": "area51_foia_doe_1994.txt", "source_type": "government_document", "evidence": "No mention of S4 in declassified documents", "reliability": 0.95}
+        ],
+        "reasoning": "Government documents acknowledge Area 51 but not S4 specifically. Absence of mention in FOIA releases does not prove non-existence, as documents may be redacted. Verdict: UNVERIFIABLE."
+      }
+    ],
+    "sources_cited": [
+      {"source_file": "area51_foia_doe_1994.txt"},
+      {"source_file": "lazar_klas_interview_1989.txt"},
+      {"source_file": "lazar_polygraph_results.txt"},
+      {"source_file": "production_notes_s4_film.md"}
+    ],
+    "retries": 0,
+    "trace_id": "trace_gov_d4a6b8c2"
+  },
+  "trace": {
+    "trace_id": "trace_gov_d4a6b8c2",
+    "query": "Do government documents corroborate Lazar's claim about the S4 facility location?",
+    "query_type": "verification",
+    "research_plan": [
+      {"agent": "corpus_search", "reason": "Retrieve all S4 location references across document types", "depends_on": [], "priority": 0},
+      {"agent": "cross_reference", "reason": "Cross-reference government docs against interview claims", "depends_on": ["corpus_search"], "priority": 1},
+      {"agent": "fact_check", "reason": "Produce verdict on corroboration claim", "depends_on": ["corpus_search", "cross_reference"], "priority": 2},
+      {"agent": "timeline", "reason": "Order government disclosures chronologically", "depends_on": ["corpus_search"], "priority": 1}
+    ],
+    "retries": 0,
+    "confidence": 0.58,
+    "trace": [
+      {
+        "node": "orchestrator",
+        "action": "analyze_query",
+        "timestamp": "2026-03-27T14:33:30.100Z",
+        "duration_ms": 203,
+        "inputs": {"query": "Do government documents corroborate Lazar's claim about the S4 facility location?"},
+        "outputs": {"query_type": "verification", "agents_planned": ["corpus_search", "cross_reference", "fact_check", "timeline"], "reasoning": "Complex verification query requiring cross-referencing government documents against interview claims. All agents needed for comprehensive analysis."},
+        "error": null
+      },
+      {
+        "node": "orchestrator",
+        "action": "dispatch",
+        "timestamp": "2026-03-27T14:33:30.303Z",
+        "duration_ms": 7,
+        "inputs": {"plan": [{"agent": "corpus_search"}, {"agent": "cross_reference"}, {"agent": "fact_check"}, {"agent": "timeline"}]},
+        "outputs": {"dispatched": ["corpus_search", "cross_reference", "timeline", "fact_check"], "skipped": []},
+        "error": null
+      },
+      {
+        "node": "corpus_search",
+        "action": "search_and_analyze",
+        "timestamp": "2026-03-27T14:33:30.310Z",
+        "duration_ms": 1892,
+        "inputs": {"query": "S4 facility location Papoose Lake government documents", "top_k": 8},
+        "outputs": {"result_count": 8, "top_sources": ["area51_foia_doe_1994.txt", "lazar_klas_interview_1989.txt", "lazar_polygraph_results.txt", "production_notes_s4_film.md"], "findings": "Government docs acknowledge Area 51 but not S4; interview sources provide detailed location claims", "key_claims": ["S4 at Papoose Range", "15 miles south of Groom Lake", "Hangar doors in mountainside"], "gaps": ["No direct government reference to S4"]},
+        "error": null
+      },
+      {
+        "node": "cross_reference",
+        "action": "cross_source_analysis",
+        "timestamp": "2026-03-27T14:33:32.202Z",
+        "duration_ms": 2156,
+        "inputs": {"claim": "S4 at Papoose Lake", "source_types_searched": 6},
+        "outputs": {"corroborating": 3, "contradicting": 1, "unresolved": 1, "summary": "Interview and polygraph support; government docs silent"},
+        "error": null
+      },
+      {
+        "node": "timeline",
+        "action": "extract_and_order",
+        "timestamp": "2026-03-27T14:33:34.358Z",
+        "duration_ms": 1834,
+        "inputs": {"corpus_results": 8, "date_range": "1989-2013"},
+        "outputs": {"events_extracted": 4, "date_conflicts": 0, "categories": {"media": 1, "personal": 1, "government": 2}, "span": "1989-05 to 2013-08"},
+        "error": null
+      },
+      {
+        "node": "fact_check",
+        "action": "verify_claims",
+        "timestamp": "2026-03-27T14:33:36.192Z",
+        "duration_ms": 2104,
+        "inputs": {"claims": ["Government corroborates S4 location"], "corpus_results": 8, "cross_ref": true},
+        "outputs": {"verdicts": [{"claim": "S4 corroboration", "verdict": "UNVERIFIABLE", "confidence": 0.45}], "total_supporting": 1, "total_contradicting": 1},
+        "error": null
+      },
+      {
+        "node": "orchestrator",
+        "action": "synthesize",
+        "timestamp": "2026-03-27T14:33:38.296Z",
+        "duration_ms": 1387,
+        "inputs": {"agents_completed": ["corpus_search", "cross_reference", "timeline", "fact_check"], "result_count": 8},
+        "outputs": {"synthesis_length": 742, "sources_cited": 4, "confidence": 0.58},
+        "error": null
+      },
+      {
+        "node": "orchestrator",
+        "action": "evaluate",
+        "timestamp": "2026-03-27T14:33:39.683Z",
+        "duration_ms": 124,
+        "inputs": {"confidence": 0.58, "threshold": 0.4},
+        "outputs": {"passed": true, "retry": false, "reasoning": "Confidence 0.58 exceeds threshold. Evidence is mixed — appropriate for a complex verification query."},
+        "error": null
+      }
+    ]
+  }
+}

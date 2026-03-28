@@ -1,0 +1,351 @@
+[
+  {
+    "id": "factual-001",
+    "query": "What did Bob Lazar claim about Element 115?",
+    "query_type": "factual",
+    "expected_answer_contains": ["gravity amplification", "stable isotope", "fuel source"],
+    "expected_sources_contain": ["interview", "transcript"],
+    "difficulty": "easy",
+    "requires_agents": ["corpus_search"]
+  },
+  {
+    "id": "factual-002",
+    "query": "What propulsion system did Lazar describe at S4?",
+    "query_type": "factual",
+    "expected_answer_contains": ["gravity", "amplifier", "reactor"],
+    "expected_sources_contain": ["interview"],
+    "difficulty": "easy",
+    "requires_agents": ["corpus_search"]
+  },
+  {
+    "id": "factual-003",
+    "query": "How many craft did Lazar claim were housed at S4?",
+    "query_type": "factual",
+    "expected_answer_contains": ["nine", "9"],
+    "expected_sources_contain": ["interview", "transcript"],
+    "difficulty": "easy",
+    "requires_agents": ["corpus_search"]
+  },
+  {
+    "id": "factual-004",
+    "query": "What name did Lazar give to the craft he worked on?",
+    "query_type": "factual",
+    "expected_answer_contains": ["sport model"],
+    "expected_sources_contain": ["interview"],
+    "difficulty": "easy",
+    "requires_agents": ["corpus_search"]
+  },
+  {
+    "id": "factual-005",
+    "query": "What was Lazar's stated educational background?",
+    "query_type": "factual",
+    "expected_answer_contains": ["MIT", "Caltech", "physics"],
+    "expected_sources_contain": ["interview"],
+    "difficulty": "easy",
+    "requires_agents": ["corpus_search"]
+  },
+  {
+    "id": "factual-006",
+    "query": "Who was the journalist that first interviewed Lazar on television?",
+    "query_type": "factual",
+    "expected_answer_contains": ["George Knapp"],
+    "expected_sources_contain": ["news", "interview"],
+    "difficulty": "easy",
+    "requires_agents": ["corpus_search"]
+  },
+  {
+    "id": "factual-007",
+    "query": "What did Lazar say about the gravity amplifiers on the craft?",
+    "query_type": "factual",
+    "expected_answer_contains": ["gravity", "wave", "amplif"],
+    "expected_sources_contain": ["interview", "transcript"],
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search"]
+  },
+  {
+    "id": "factual-008",
+    "query": "What security clearance level did Lazar claim to hold?",
+    "query_type": "factual",
+    "expected_answer_contains": ["majestic", "clearance"],
+    "expected_sources_contain": ["interview"],
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search"]
+  },
+  {
+    "id": "factual-009",
+    "query": "What did Lazar describe about the interior of the craft?",
+    "query_type": "factual",
+    "expected_answer_contains": ["small", "seat", "child"],
+    "expected_sources_contain": ["interview", "transcript"],
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search"]
+  },
+  {
+    "id": "factual-010",
+    "query": "What role did Lazar claim Dennis Mariani played?",
+    "query_type": "factual",
+    "expected_answer_contains": ["supervisor", "contact"],
+    "expected_sources_contain": ["interview"],
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search"]
+  },
+  {
+    "id": "factual-011",
+    "query": "What location did Lazar identify as the S4 facility site?",
+    "query_type": "factual",
+    "expected_answer_contains": ["Papoose", "lake", "Area 51"],
+    "expected_sources_contain": ["interview"],
+    "difficulty": "easy",
+    "requires_agents": ["corpus_search"]
+  },
+  {
+    "id": "timeline-001",
+    "query": "What is the chronological sequence of Lazar's public disclosures between 1988 and 1990?",
+    "query_type": "timeline",
+    "expected_events_min": 3,
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search", "timeline"]
+  },
+  {
+    "id": "timeline-002",
+    "query": "Trace the timeline of Element 115 from Lazar's claims to its official synthesis.",
+    "query_type": "timeline",
+    "expected_events_min": 3,
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "timeline"]
+  },
+  {
+    "id": "timeline-003",
+    "query": "What key events occurred in the documentary production of the S4 film?",
+    "query_type": "timeline",
+    "expected_events_min": 2,
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search", "timeline"]
+  },
+  {
+    "id": "timeline-004",
+    "query": "When did Lazar first go public and what followed in the subsequent months?",
+    "query_type": "timeline",
+    "expected_events_min": 3,
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search", "timeline"]
+  },
+  {
+    "id": "timeline-005",
+    "query": "Outline the sequence of government responses to Lazar's claims from 1989 onward.",
+    "query_type": "timeline",
+    "expected_events_min": 2,
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "timeline", "cross_reference"]
+  },
+  {
+    "id": "timeline-006",
+    "query": "What is the chronology of polygraph tests administered to Lazar?",
+    "query_type": "timeline",
+    "expected_events_min": 2,
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search", "timeline"]
+  },
+  {
+    "id": "timeline-007",
+    "query": "List the key dates related to Lazar's claimed employment at Los Alamos and S4.",
+    "query_type": "timeline",
+    "expected_events_min": 3,
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search", "timeline"]
+  },
+  {
+    "id": "timeline-008",
+    "query": "What is the timeline of media coverage of Lazar from his first interview to the documentary?",
+    "query_type": "timeline",
+    "expected_events_min": 3,
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search", "timeline"]
+  },
+  {
+    "id": "timeline-009",
+    "query": "Map out when each piece of Lazar's story was first publicly revealed.",
+    "query_type": "timeline",
+    "expected_events_min": 4,
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "timeline"]
+  },
+  {
+    "id": "timeline-010",
+    "query": "What is the chronological order of scientific developments related to Lazar's Element 115 claims?",
+    "query_type": "timeline",
+    "expected_events_min": 2,
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "timeline", "fact_check"]
+  },
+  {
+    "id": "verification-001",
+    "query": "Is it true that Lazar worked at Los Alamos National Laboratory?",
+    "query_type": "verification",
+    "expected_verdict": "VERIFIED",
+    "expected_evidence_min": 2,
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search", "fact_check"]
+  },
+  {
+    "id": "verification-002",
+    "query": "Did Lazar pass any polygraph examinations regarding his S4 claims?",
+    "query_type": "verification",
+    "expected_verdict": "PARTIALLY_VERIFIED",
+    "expected_evidence_min": 2,
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search", "fact_check"]
+  },
+  {
+    "id": "verification-003",
+    "query": "Can Lazar's claimed MIT and Caltech degrees be independently verified?",
+    "query_type": "verification",
+    "expected_verdict": "UNVERIFIED",
+    "expected_evidence_min": 2,
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search", "fact_check"]
+  },
+  {
+    "id": "verification-004",
+    "query": "Is there physical evidence supporting the existence of an S4 facility?",
+    "query_type": "verification",
+    "expected_verdict": "UNVERIFIED",
+    "expected_evidence_min": 1,
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "fact_check", "cross_reference"]
+  },
+  {
+    "id": "verification-005",
+    "query": "Was Lazar's W-2 from the Department of Naval Intelligence authenticated?",
+    "query_type": "verification",
+    "expected_verdict": "PARTIALLY_VERIFIED",
+    "expected_evidence_min": 2,
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "fact_check"]
+  },
+  {
+    "id": "verification-006",
+    "query": "Did Element 115 turn out to have the properties Lazar described?",
+    "query_type": "verification",
+    "expected_verdict": "PARTIALLY_VERIFIED",
+    "expected_evidence_min": 2,
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "fact_check"]
+  },
+  {
+    "id": "verification-007",
+    "query": "Was Lazar's name found in the Los Alamos phone directory?",
+    "query_type": "verification",
+    "expected_verdict": "VERIFIED",
+    "expected_evidence_min": 1,
+    "difficulty": "easy",
+    "requires_agents": ["corpus_search", "fact_check"]
+  },
+  {
+    "id": "verification-008",
+    "query": "Did George Knapp independently confirm any of Lazar's employment claims?",
+    "query_type": "verification",
+    "expected_verdict": "PARTIALLY_VERIFIED",
+    "expected_evidence_min": 2,
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search", "fact_check"]
+  },
+  {
+    "id": "verification-009",
+    "query": "Is the hand-scanner Lazar described at S4 a real technology?",
+    "query_type": "verification",
+    "expected_verdict": "VERIFIED",
+    "expected_evidence_min": 1,
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search", "fact_check"]
+  },
+  {
+    "id": "verification-010",
+    "query": "Has any government official confirmed Lazar's security clearance?",
+    "query_type": "verification",
+    "expected_verdict": "UNVERIFIED",
+    "expected_evidence_min": 1,
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search", "fact_check"]
+  },
+  {
+    "id": "crossref-001",
+    "query": "Do government documents corroborate Lazar's claim about the S4 facility location?",
+    "query_type": "cross_reference",
+    "expected_source_types": ["government_document", "interview_transcript"],
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "cross_reference", "fact_check"]
+  },
+  {
+    "id": "crossref-002",
+    "query": "How do Lazar's 1989 interview claims compare with his 2019 documentary statements?",
+    "query_type": "cross_reference",
+    "expected_source_types": ["interview_transcript"],
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "cross_reference"]
+  },
+  {
+    "id": "crossref-003",
+    "query": "What do different sources say about the legitimacy of Lazar's educational credentials?",
+    "query_type": "cross_reference",
+    "expected_source_types": ["interview_transcript", "news_article"],
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "cross_reference", "fact_check"]
+  },
+  {
+    "id": "crossref-004",
+    "query": "Do eyewitness accounts from others at Area 51 support or contradict Lazar's testimony?",
+    "query_type": "cross_reference",
+    "expected_source_types": ["eyewitness_account", "interview_transcript"],
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "cross_reference"]
+  },
+  {
+    "id": "crossref-005",
+    "query": "How does scientific literature on Element 115 relate to Lazar's original claims?",
+    "query_type": "cross_reference",
+    "expected_source_types": ["scientific_paper", "interview_transcript"],
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "cross_reference", "fact_check"]
+  },
+  {
+    "id": "crossref-006",
+    "query": "Compare news coverage of Lazar's claims across different media outlets.",
+    "query_type": "cross_reference",
+    "expected_source_types": ["news_article", "interview_transcript"],
+    "difficulty": "medium",
+    "requires_agents": ["corpus_search", "cross_reference"]
+  },
+  {
+    "id": "crossref-007",
+    "query": "Cross-reference Lazar's propulsion description with known physics research on gravitational manipulation.",
+    "query_type": "cross_reference",
+    "expected_source_types": ["scientific_paper", "interview_transcript"],
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "cross_reference", "fact_check"]
+  },
+  {
+    "id": "crossref-008",
+    "query": "Do the production notes for the documentary reveal any discrepancies with Lazar's on-camera statements?",
+    "query_type": "cross_reference",
+    "expected_source_types": ["production_note", "interview_transcript"],
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "cross_reference"]
+  },
+  {
+    "id": "crossref-009",
+    "query": "What do government FOIA documents say about Lazar compared to his own claims?",
+    "query_type": "cross_reference",
+    "expected_source_types": ["government_document", "interview_transcript"],
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "cross_reference", "fact_check"]
+  },
+  {
+    "id": "crossref-010",
+    "query": "How do book accounts of the S4 story differ from Lazar's direct testimony?",
+    "query_type": "cross_reference",
+    "expected_source_types": ["book_excerpt", "interview_transcript"],
+    "difficulty": "hard",
+    "requires_agents": ["corpus_search", "cross_reference"]
+  }
+]

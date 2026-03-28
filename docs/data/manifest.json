@@ -1,0 +1,12 @@
+{
+  "recorded_at": "2026-03-27T14:30:00Z",
+  "model": "Mistral 7B (Ollama)",
+  "system": "S4 Research Intelligence — Multi-Agent Pipeline",
+  "queries": [
+    {"id": "element-115", "query": "What did Bob Lazar claim about Element 115?", "description": "Factual lookup — single agent dispatch"},
+    {"id": "los-alamos", "query": "Is it true that Lazar worked at Los Alamos National Laboratory?", "description": "Fact verification — corpus search + fact-check"},
+    {"id": "timeline", "query": "What is the chronological sequence of Lazar's public disclosures between 1988 and 1990?", "description": "Timeline construction — corpus search + timeline agent"},
+    {"id": "government-corroboration", "query": "Do government documents corroborate Lazar's claim about the S4 facility location?", "description": "Cross-reference — all four agents dispatched"},
+    {"id": "propulsion", "query": "How did Lazar describe the propulsion system he allegedly worked on?", "description": "Deep factual — corpus search with source weighting"}
+  ]
+}

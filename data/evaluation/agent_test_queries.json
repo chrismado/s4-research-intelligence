@@ -1,0 +1,34 @@
+[
+    {
+        "question": "Do government documents corroborate Lazar's claim about Element 115?",
+        "ground_truth": "FOIA documents from the DOE do not specifically reference Element 115. Lazar's claim predates the actual synthesis of Element 115 (Moscovium) at JINR Dubna in 2003. The synthesized element is highly unstable, contradicting Lazar's description of a stable isotope.",
+        "expected_sources": ["area51_foia_doe_1994.pdf", "element115_synthesis_2003.pdf", "lazar_klas_interview_1989.txt"],
+        "expected_date_mentions": ["2003", "115", "1989"],
+        "expect_contradictions": true,
+        "requires_agents": ["corpus_search", "cross_reference", "fact_check"]
+    },
+    {
+        "question": "What is the chronological sequence of Lazar's public disclosures about S4?",
+        "ground_truth": "Lazar first went public in 1989 with George Knapp on KLAS-TV, initially appearing in silhouette as 'Dennis'. He later appeared without disguise. His story has been retold in interviews and the 2019 Joe Rogan podcast over 30 years.",
+        "expected_sources": ["lazar_klas_interview_1989.txt", "lazar_joe_rogan_2019.txt"],
+        "expected_date_mentions": ["1989", "2019"],
+        "expect_contradictions": false,
+        "requires_agents": ["corpus_search", "timeline"]
+    },
+    {
+        "question": "Is it true that Lazar worked at Los Alamos National Laboratory?",
+        "ground_truth": "Lazar claims to have worked at Los Alamos National Laboratory. A 1982 Los Alamos phone directory lists a 'Robert Lazar'. LANL has not officially confirmed or denied his employment. This remains one of the more verifiable aspects of his background.",
+        "expected_sources": ["lazar_klas_interview_1989.txt", "lazar_joe_rogan_2019.txt"],
+        "expected_date_mentions": ["1982"],
+        "expect_contradictions": false,
+        "requires_agents": ["corpus_search", "fact_check"]
+    },
+    {
+        "question": "What propulsion system did Lazar describe?",
+        "ground_truth": "Lazar described a gravity-wave propulsion system powered by Element 115 that could create its own gravitational field, allowing craft to bend space-time for travel.",
+        "expected_sources": ["lazar_klas_interview_1989.txt", "lazar_joe_rogan_2019.txt"],
+        "expected_date_mentions": ["115"],
+        "expect_contradictions": false,
+        "requires_agents": ["corpus_search"]
+    }
+]

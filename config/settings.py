@@ -77,6 +77,14 @@ class Settings(BaseSettings):
     api_port: int = 8000
     api_cors_origins: list[str] = ["http://localhost:3000", "http://localhost:8501"]
 
+    # --- Evaluation ---
+    eval_support_threshold: float = 0.75
+    eval_contradiction_threshold: float = 0.60
+    eval_abstention_confidence: float = 0.4
+    eval_pass_threshold: float = 0.5
+    eval_regression_warning: float = 0.05
+    eval_regression_critical: float = 0.10
+
     # --- Logging ---
     log_level: str = "INFO"
 

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "unans-001",
+    "query": "What did Bob Lazar say about the Roswell crash debris?",
+    "reason": "Lazar did not discuss Roswell crash debris in his public statements",
+    "expected_behavior": "abstain"
+  },
+  {
+    "id": "unans-002",
+    "query": "What alien language did Lazar learn to read while at S4?",
+    "reason": "Lazar never claimed to learn an alien language",
+    "expected_behavior": "abstain"
+  },
+  {
+    "id": "unans-003",
+    "query": "Describe the alien beings Lazar interacted with at S4.",
+    "reason": "Lazar did not claim to interact with alien beings directly",
+    "expected_behavior": "abstain"
+  },
+  {
+    "id": "unans-004",
+    "query": "What did Lazar reveal about underground alien bases on the Moon?",
+    "reason": "Lazar made no claims about lunar alien bases",
+    "expected_behavior": "abstain"
+  },
+  {
+    "id": "unans-005",
+    "query": "How did Lazar describe the alien communication devices he smuggled out of S4?",
+    "reason": "Lazar did not claim to smuggle communication devices",
+    "expected_behavior": "abstain"
+  },
+  {
+    "id": "unans-006",
+    "query": "What role did Elon Musk play in corroborating Lazar's claims?",
+    "reason": "No documented connection between Musk and Lazar's claims",
+    "expected_behavior": "abstain"
+  },
+  {
+    "id": "unans-007",
+    "query": "What experiments did Lazar conduct with Element 116 at S4?",
+    "reason": "Lazar discussed Element 115, not Element 116",
+    "expected_behavior": "abstain"
+  },
+  {
+    "id": "unans-008",
+    "query": "What were the details of the S4 facility self-destruct protocol that Lazar described?",
+    "reason": "No claims about a self-destruct protocol exist in the corpus",
+    "expected_behavior": "abstain"
+  }
+]

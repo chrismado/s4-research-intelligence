@@ -1,0 +1,120 @@
+{
+  "id": "propulsion",
+  "query": "How did Lazar describe the propulsion system he allegedly worked on?",
+  "description": "Deep factual — corpus search with source weighting",
+  "recorded_at": "2026-03-27T14:35:00Z",
+  "total_duration_ms": 3718,
+  "result": {
+    "synthesis": "Lazar described a dual-mode propulsion system that operated using gravity manipulation. The system centered on an antimatter reactor fueled by Element 115. In the reactor, a disc of Element 115 was bombarded with protons, causing transmutation to Element 116, which immediately decayed and released antimatter. This antimatter was directed into a gas-phase matter target, producing total annihilation and enormous energy output. The energy powered three gravity amplifiers arranged in a triangular configuration on the underside of the craft. Lazar described two flight modes: 'omicron configuration' for close-range travel, where the craft tilted and used the amplifiers for lift, and 'delta configuration' for interstellar travel, where all three amplifiers focused on a single point to create a distortion in space-time. The craft would essentially pull the destination toward itself by warping space, then release the distortion to arrive. Lazar specifically noted that the system did not violate Einstein's speed-of-light limitation because it moved space rather than moving through space.",
+    "confidence": 0.82,
+    "query_type": "factual",
+    "research_plan": [
+      {"agent": "corpus_search", "reason": "Deep factual query requiring detailed retrieval from multiple corpus segments about propulsion claims", "depends_on": [], "priority": 0}
+    ],
+    "corpus_results": [
+      {
+        "content": "Lazar described the propulsion system as consisting of three main components: the antimatter reactor, a gravity amplifier array, and the Element 115 fuel. The reactor converted Element 115 to antimatter through proton bombardment, and the resulting energy was channeled through waveguides to three gravity amplifiers mounted on the bottom of the craft in a triangular pattern.",
+        "source_file": "lazar_klas_interview_1989.txt",
+        "source_type": "interview_transcript",
+        "relevance_score": 0.95,
+        "reliability_score": 0.70,
+        "combined_score": 0.863,
+        "excerpt": "Lazar described the propulsion system as consisting of three main components..."
+      },
+      {
+        "content": "In the Joe Rogan interview, Lazar elaborated on the two flight configurations. He called the short-range mode 'omicron configuration,' where the craft tilts to its side with one amplifier aimed at the ground for lift. The interstellar mode, 'delta configuration,' focuses all three amplifiers to a single point ahead of the craft, creating what Lazar described as a gravitational distortion that warps space-time.",
+        "source_file": "lazar_joe_rogan_2019.txt",
+        "source_type": "interview_transcript",
+        "relevance_score": 0.93,
+        "reliability_score": 0.70,
+        "combined_score": 0.849,
+        "excerpt": "In the Joe Rogan interview, Lazar elaborated on the two flight configurations..."
+      },
+      {
+        "content": "Lazar emphasized that the propulsion system did not violate known physics principles in the way most people assumed. He explained that instead of accelerating the craft through space (which would require exceeding the speed of light), the system warped space-time itself, pulling the destination closer. He compared it to placing a heavy object on a rubber sheet and rolling a marble toward the depression.",
+        "source_file": "lazar_joe_rogan_2019.txt",
+        "source_type": "interview_transcript",
+        "relevance_score": 0.90,
+        "reliability_score": 0.70,
+        "combined_score": 0.830,
+        "excerpt": "Lazar emphasized that the propulsion system did not violate known physics principles..."
+      },
+      {
+        "content": "Critics from the scientific community have noted that while the concept of gravity manipulation via exotic matter is theoretically discussed in physics (particularly in the context of Alcubierre metrics), no known mechanism exists for converting Element 115 decay products into a controlled gravitational field. The energy requirements described by Lazar also exceed what antimatter reactions of the described scale could produce.",
+        "source_file": "element115_synthesis_2003.txt",
+        "source_type": "scientific_paper",
+        "relevance_score": 0.80,
+        "reliability_score": 0.90,
+        "combined_score": 0.835,
+        "excerpt": "Critics from the scientific community have noted that while gravity manipulation is theoretically discussed..."
+      }
+    ],
+    "cross_ref_results": {},
+    "timeline_results": [],
+    "fact_check_results": [],
+    "sources_cited": [
+      {"source_file": "lazar_klas_interview_1989.txt"},
+      {"source_file": "lazar_joe_rogan_2019.txt"},
+      {"source_file": "element115_synthesis_2003.txt"}
+    ],
+    "retries": 0,
+    "trace_id": "trace_prop_e5b7c9d3"
+  },
+  "trace": {
+    "trace_id": "trace_prop_e5b7c9d3",
+    "query": "How did Lazar describe the propulsion system he allegedly worked on?",
+    "query_type": "factual",
+    "research_plan": [
+      {"agent": "corpus_search", "reason": "Deep factual query requiring detailed retrieval from multiple corpus segments about propulsion claims", "depends_on": [], "priority": 0}
+    ],
+    "retries": 0,
+    "confidence": 0.82,
+    "trace": [
+      {
+        "node": "orchestrator",
+        "action": "analyze_query",
+        "timestamp": "2026-03-27T14:35:00.100Z",
+        "duration_ms": 158,
+        "inputs": {"query": "How did Lazar describe the propulsion system he allegedly worked on?"},
+        "outputs": {"query_type": "factual", "agents_planned": ["corpus_search"], "reasoning": "Descriptive factual question about specific technical claims. Corpus search sufficient — no verification or timeline needed."},
+        "error": null
+      },
+      {
+        "node": "orchestrator",
+        "action": "dispatch",
+        "timestamp": "2026-03-27T14:35:00.258Z",
+        "duration_ms": 5,
+        "inputs": {"plan": [{"agent": "corpus_search"}]},
+        "outputs": {"dispatched": ["corpus_search"], "skipped": ["cross_reference", "timeline", "fact_check"]},
+        "error": null
+      },
+      {
+        "node": "corpus_search",
+        "action": "search_and_analyze",
+        "timestamp": "2026-03-27T14:35:00.263Z",
+        "duration_ms": 2103,
+        "inputs": {"query": "Lazar propulsion system gravity amplifier antimatter reactor", "top_k": 8},
+        "outputs": {"result_count": 6, "top_sources": ["lazar_klas_interview_1989.txt", "lazar_joe_rogan_2019.txt", "element115_synthesis_2003.txt"], "findings": "Consistent propulsion descriptions across interviews spanning 30 years", "key_claims": ["Antimatter reactor", "Three gravity amplifiers", "Omicron/delta configurations", "Space-time warping"], "gaps": ["No independent technical validation"]},
+        "error": null
+      },
+      {
+        "node": "orchestrator",
+        "action": "synthesize",
+        "timestamp": "2026-03-27T14:35:02.366Z",
+        "duration_ms": 1241,
+        "inputs": {"agents_completed": ["corpus_search"], "result_count": 6},
+        "outputs": {"synthesis_length": 834, "sources_cited": 3, "confidence": 0.82},
+        "error": null
+      },
+      {
+        "node": "orchestrator",
+        "action": "evaluate",
+        "timestamp": "2026-03-27T14:35:03.607Z",
+        "duration_ms": 109,
+        "inputs": {"confidence": 0.82, "threshold": 0.4},
+        "outputs": {"passed": true, "retry": false, "reasoning": "Confidence 0.82 exceeds threshold. Detailed, consistent descriptions found across multiple interview sources."},
+        "error": null
+      }
+    ]
+  }
+}

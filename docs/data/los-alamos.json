@@ -1,0 +1,136 @@
+{
+  "id": "los-alamos",
+  "query": "Is it true that Lazar worked at Los Alamos National Laboratory?",
+  "description": "Fact verification — corpus search + fact-check",
+  "recorded_at": "2026-03-27T14:31:05Z",
+  "total_duration_ms": 5834,
+  "result": {
+    "synthesis": "There is credible evidence supporting Bob Lazar's claim of employment at Los Alamos National Laboratory, though with important caveats. A 1982 phone directory for Los Alamos National Laboratory listed Lazar's name, and investigative journalist George Knapp confirmed this directory entry. Lazar claimed he worked there as a physicist. However, the laboratory itself has stated it has no employment records for Lazar. Lazar and his supporters suggest his records were deliberately erased as part of a government effort to discredit him. The Los Alamos claim is one of the more substantiated aspects of Lazar's story, as the phone directory provides independent documentary evidence, though it does not confirm his claimed role or the nature of his work.",
+    "confidence": 0.72,
+    "query_type": "verification",
+    "research_plan": [
+      {"agent": "corpus_search", "reason": "Retrieve all references to Los Alamos employment", "depends_on": [], "priority": 0},
+      {"agent": "fact_check", "reason": "Verification query requires explicit fact-checking with verdicts", "depends_on": ["corpus_search"], "priority": 1}
+    ],
+    "corpus_results": [
+      {
+        "content": "George Knapp verified that a 1982 Los Alamos National Laboratory phone directory listed Bob Lazar as an employee. Knapp physically located the directory and confirmed the listing. This was one of the key pieces of evidence Knapp cited when he first aired Lazar's story on KLAS-TV in November 1989.",
+        "source_file": "lazar_klas_interview_1989.txt",
+        "source_type": "interview_transcript",
+        "relevance_score": 0.94,
+        "reliability_score": 0.70,
+        "combined_score": 0.856,
+        "excerpt": "George Knapp verified that a 1982 Los Alamos National Laboratory phone directory listed Bob Lazar..."
+      },
+      {
+        "content": "In the 2019 interview, Lazar stated he was hired at Los Alamos through a staffing contractor, which could explain the lack of direct employment records. He described working on particle accelerator projects and claimed his W-2 tax forms from that period were among the documents seized during a government raid.",
+        "source_file": "lazar_joe_rogan_2019.txt",
+        "source_type": "interview_transcript",
+        "relevance_score": 0.88,
+        "reliability_score": 0.70,
+        "combined_score": 0.817,
+        "excerpt": "In the 2019 interview, Lazar stated he was hired at Los Alamos through a staffing contractor..."
+      },
+      {
+        "content": "Los Alamos National Laboratory has stated it has no record of Bob Lazar being employed as a staff scientist or physicist. However, the laboratory acknowledged that contract workers and temporary staff from that era may not appear in standard personnel databases.",
+        "source_file": "area51_foia_doe_1994.txt",
+        "source_type": "government_document",
+        "relevance_score": 0.82,
+        "reliability_score": 0.95,
+        "combined_score": 0.865,
+        "excerpt": "Los Alamos National Laboratory has stated it has no record of Bob Lazar being employed..."
+      }
+    ],
+    "cross_ref_results": {},
+    "timeline_results": [],
+    "fact_check_results": [
+      {
+        "claim": "Bob Lazar was employed at Los Alamos National Laboratory",
+        "verdict": "DISPUTED",
+        "confidence": 0.65,
+        "supporting_sources": [
+          {"source": "lazar_klas_interview_1989.txt", "source_type": "interview_transcript", "evidence": "1982 phone directory listing confirmed by George Knapp", "reliability": 0.70},
+          {"source": "lazar_joe_rogan_2019.txt", "source_type": "interview_transcript", "evidence": "Lazar describes contractor employment and particle accelerator work", "reliability": 0.70}
+        ],
+        "contradicting_sources": [
+          {"source": "area51_foia_doe_1994.txt", "source_type": "government_document", "evidence": "LANL states no employment records found for Lazar", "reliability": 0.95}
+        ],
+        "reasoning": "Phone directory listing provides documentary evidence, but official lab records show no employment. Contractor employment theory is plausible but unverified. Verdict: DISPUTED."
+      }
+    ],
+    "sources_cited": [
+      {"source_file": "lazar_klas_interview_1989.txt"},
+      {"source_file": "lazar_joe_rogan_2019.txt"},
+      {"source_file": "area51_foia_doe_1994.txt"}
+    ],
+    "retries": 0,
+    "trace_id": "trace_lanl_b8e4d1f2"
+  },
+  "trace": {
+    "trace_id": "trace_lanl_b8e4d1f2",
+    "query": "Is it true that Lazar worked at Los Alamos National Laboratory?",
+    "query_type": "verification",
+    "research_plan": [
+      {"agent": "corpus_search", "reason": "Retrieve all references to Los Alamos employment", "depends_on": [], "priority": 0},
+      {"agent": "fact_check", "reason": "Verification query requires explicit fact-checking with verdicts", "depends_on": ["corpus_search"], "priority": 1}
+    ],
+    "retries": 0,
+    "confidence": 0.72,
+    "trace": [
+      {
+        "node": "orchestrator",
+        "action": "analyze_query",
+        "timestamp": "2026-03-27T14:31:05.100Z",
+        "duration_ms": 187,
+        "inputs": {"query": "Is it true that Lazar worked at Los Alamos National Laboratory?"},
+        "outputs": {"query_type": "verification", "agents_planned": ["corpus_search", "fact_check"], "reasoning": "Truth-verification question requiring fact-checking agent to produce verdict with supporting/contradicting evidence."},
+        "error": null
+      },
+      {
+        "node": "orchestrator",
+        "action": "dispatch",
+        "timestamp": "2026-03-27T14:31:05.287Z",
+        "duration_ms": 5,
+        "inputs": {"plan": [{"agent": "corpus_search"}, {"agent": "fact_check"}]},
+        "outputs": {"dispatched": ["corpus_search", "fact_check"], "skipped": ["cross_reference", "timeline"]},
+        "error": null
+      },
+      {
+        "node": "corpus_search",
+        "action": "search_and_analyze",
+        "timestamp": "2026-03-27T14:31:05.292Z",
+        "duration_ms": 1623,
+        "inputs": {"query": "Lazar Los Alamos National Laboratory employment", "top_k": 8},
+        "outputs": {"result_count": 6, "top_sources": ["lazar_klas_interview_1989.txt", "lazar_joe_rogan_2019.txt", "area51_foia_doe_1994.txt"], "findings": "Phone directory evidence supports claim; official records deny employment", "key_claims": ["1982 phone directory listing", "Contractor employment", "No official records"], "gaps": ["W-2 tax forms not available", "Contractor records not searchable"]},
+        "error": null
+      },
+      {
+        "node": "fact_check",
+        "action": "verify_claims",
+        "timestamp": "2026-03-27T14:31:06.915Z",
+        "duration_ms": 2418,
+        "inputs": {"claims": ["Lazar was employed at LANL"], "corpus_results": 6},
+        "outputs": {"verdicts": [{"claim": "LANL employment", "verdict": "DISPUTED", "confidence": 0.65}], "total_supporting": 2, "total_contradicting": 1},
+        "error": null
+      },
+      {
+        "node": "orchestrator",
+        "action": "synthesize",
+        "timestamp": "2026-03-27T14:31:09.333Z",
+        "duration_ms": 1247,
+        "inputs": {"agents_completed": ["corpus_search", "fact_check"], "result_count": 6},
+        "outputs": {"synthesis_length": 581, "sources_cited": 3, "confidence": 0.72},
+        "error": null
+      },
+      {
+        "node": "orchestrator",
+        "action": "evaluate",
+        "timestamp": "2026-03-27T14:31:10.580Z",
+        "duration_ms": 112,
+        "inputs": {"confidence": 0.72, "threshold": 0.4},
+        "outputs": {"passed": true, "retry": false, "reasoning": "Confidence 0.72 exceeds threshold. Evidence is mixed but well-documented."},
+        "error": null
+      }
+    ]
+  }
+}
