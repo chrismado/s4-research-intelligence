@@ -44,7 +44,7 @@ Query → Vector Search (ChromaDB) → Source-Weighted Reranking → Context Ass
 | API | FastAPI with async support |
 | CLI | Typer + Rich |
 | Containerization | Docker Compose (app + Ollama with GPU passthrough) |
-| Evaluation | Custom RAGAS-style metrics |
+| Evaluation | Custom suite — pynvml, rouge-score, NLTK (no ragas/deepeval) |
 | Language | Python 3.10+ |
 
 ## Quick Start
@@ -128,14 +128,108 @@ curl -X POST http://localhost:8000/api/v1/ingest/file \
 | News Article | 0.60 | Journalistic reporting, variable accuracy |
 | Production Note | 0.50 | Internal working documents |
 
-## Evaluation
+## Evaluation Suite
+
+Production-grade evaluation and benchmarking framework — built from scratch with no external eval libraries (no ragas, no deepeval, no trulens).
+
+### Golden Test Set
+
+41 ground-truth Q&A pairs spanning four query types, all drawn from the S4/Bob Lazar research corpus:
+
+| Type | Count | Example |
+|------|-------|---------|
+| Factual | 11 | "What element did Lazar claim was used as nuclear fuel in the alien craft?" |
+| Timeline | 10 | "When did Lazar first take friends to watch test flights near S4?" |
+| Verification | 10 | "Did Lazar's W-2 from the Department of Naval Intelligence list a valid EIN?" |
+| Cross-reference | 10 | "Which of Lazar's claims about the layout of S4 are corroborated by other sources?" |
+
+Each case includes expected answer keywords, difficulty level, and query type metadata for per-dimension scoring.
+
+### Hallucination Detection
+
+Three-phase pipeline that operates without an LLM-as-judge:
+
+1. **Claim Extraction** — NLTK sentence tokenization with regex-based filtering (strips hedging, meta-commentary, compound splitting)
+2. **Source Matching** — Each claim is searched against the ChromaDB vector store. Cosine similarity above the support threshold (default 0.75) marks a claim as grounded; negation detection flags contradictions
+3. **Scoring** — Computes grounding score, hallucination rate, and fabrication rate per response. Batch aggregation with trend tracking over time
+
+### Adversarial Testing
+
+Three attack categories with heuristic-based detection:
+
+| Attack Type | Cases | What It Tests |
+|-------------|-------|---------------|
+| Contradiction Injection | 7 | Embeds a false premise in the query — does the system correct it? |
+| Unanswerable Queries | 8 | Questions with no answer in the corpus — does the system abstain? |
+| Prompt Injection | 8 | Instruction override, role hijack, data exfiltration — does the system resist? |
+
+Overall adversarial score is a weighted aggregate: 30% contradiction + 30% abstention + 40% injection resistance.
+
+### Performance Benchmarks
+
+| Benchmark | Metrics | Implementation |
+|-----------|---------|----------------|
+| Latency | p50/p95/p99, per-component (embedding, retrieval, LLM, TTFT) | `time.perf_counter()` with warmup queries |
+| Throughput | QPS at concurrency levels [1, 2, 4, 8], error rate | `ThreadPoolExecutor` |
+| VRAM | Per-GPU baseline/peak/delta via pynvml | Background sampling thread during inference |
+| KV Cache Quantization | FP16/INT8/INT4 tokens/s, VRAM, TTFT, perplexity delta, max context | llama.cpp `--cache-type-k`/`--cache-type-v` with Ollama fallback |
+| Corpus Scaling | Accuracy vs data volume at 25/50/75/100% | Proportional top_k reduction |
+
+KV cache quantization benchmarks are inspired by TurboQuant (March 2026).
+
+### Regression Tracking
+
+- Saves each eval run's metrics to JSON history files
+- Compares current run against the most recent previous run
+- Configurable thresholds: warning (5% drop) and critical (10% drop)
+- Tracks 9 metrics: pass rate, relevance, completeness, source accuracy, confidence calibration, grounding score, contradiction detection, abstention, injection resistance
+
+### A/B Comparison
+
+Paired t-test (implemented from scratch, no scipy) comparing RAG vs Agent pipelines across 5 metrics. Reports statistical significance (p < 0.05) and determines per-metric and overall winner.
+
+### Reports
+
+Three output formats:
+
+- **Markdown** — Full report with tables for every section, written to `docs/eval_report.md`
+- **JSON** — Machine-readable export with pass/fail status for CI/CD (`exit code 1` on critical regressions)
+- **Terminal Dashboard** — Rich tables with colored status badges, progress bars during eval runs
+
+### CLI
 
 ```bash
-# Run evaluation against test queries with ground truth
-python -m src.evaluation.evaluator --test-set data/evaluation/test_queries.json
+# Run everything
+s4ri eval --all --dashboard
+
+# Individual modules
+s4ri eval --hallucination
+s4ri eval --adversarial
+s4ri eval --benchmark
+s4ri eval --regression
+s4ri eval --quantization
+s4ri eval --compare              # A/B: Agent vs RAG
+
+# Save report
+s4ri eval --all --report eval_report.md
 ```
 
-Metrics tracked: source recall, date coverage, citation rate, contradiction detection accuracy, answer confidence calibration.
+### API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/eval/run` | Launch async eval run (accepts module list) |
+| GET | `/eval/status/{id}` | Check run status |
+| GET | `/eval/report/{id}` | Get completed results |
+| GET | `/eval/history` | List all runs |
+
+### CI/CD
+
+GitHub Actions workflow (`.github/workflows/eval.yml`) runs on every push and PR to main:
+
+1. Lint eval code with ruff
+2. Run 62 eval unit tests
+3. Run regression checks (if vector store available)
 
 ## Project Structure
 
@@ -148,13 +242,28 @@ s4-research-intelligence/
 │   ├── api/                        # FastAPI REST interface
 │   ├── models/                     # Pydantic schemas
 │   ├── prompts/                    # Engineered prompt templates
-│   ├── evaluation/                 # Quality measurement pipeline
+│   ├── evaluation/
+│   │   ├── evaluator.py            # Original RAG evaluator (preserved)
+│   │   ├── suite.py                # Eval suite orchestrator
+│   │   ├── hallucination/          # Claim extraction → source matching → scoring
+│   │   ├── adversarial/            # Contradiction, unanswerable, injection tests
+│   │   ├── benchmarks/             # Latency, throughput, VRAM, quantization, scaling
+│   │   ├── regression/             # Golden set runner, tracker, A/B comparator
+│   │   ├── report/                 # Markdown, JSON, terminal dashboard
+│   │   └── datasets/               # Dataset loader
 │   └── cli.py                      # Command-line interface
-├── tests/                          # Unit and integration tests
-├── docker/                         # Containerization
+├── tests/
+│   └── test_evaluation/            # 62 unit tests across 7 test files
 ├── data/
 │   ├── raw/                        # Source documents (not committed)
-│   └── evaluation/                 # Test queries with ground truth
+│   └── evaluation/
+│       ├── golden_queries.json     # 41 ground-truth Q&A pairs
+│       ├── adversarial_queries.json
+│       ├── unanswerable_queries.json
+│       ├── contradiction_sets.json
+│       └── injection_prompts.json
+├── .github/workflows/eval.yml      # CI pipeline
+├── docker/                         # Containerization
 └── pyproject.toml
 ```
 
