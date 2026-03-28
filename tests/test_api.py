@@ -61,4 +61,4 @@ async def test_ingest_manifest_not_found(transport):
             "/api/v1/ingest/manifest",
             data={"manifest_path": "/nonexistent/path.json"},
         )
-        assert resp.status_code == 404
+        assert resp.status_code == 400

@@ -155,7 +155,10 @@ async def ingest_manifest(manifest_path: str = Form(...)):
     data_dir = Path(settings.raw_dir).resolve().parent
 
     if not str(path).startswith(str(data_dir)):
-        raise HTTPException(status_code=400, detail="Manifest path must be within the data directory")
+        raise HTTPException(
+            status_code=400,
+            detail="Manifest path must be within the data directory",
+        )
 
     if not path.exists():
         raise HTTPException(status_code=404, detail="Manifest not found")

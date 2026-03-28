@@ -12,7 +12,11 @@ from .documents import SourceType
 class ResearchQuery(BaseModel):
     """A research question submitted to the assistant."""
 
-    question: str = Field(min_length=1, max_length=10000, description="Natural language research question")
+    question: str = Field(
+        min_length=1,
+        max_length=10000,
+        description="Natural language research question",
+    )
     source_types: list[SourceType] | None = Field(
         default=None, description="Filter to specific source types"
     )
